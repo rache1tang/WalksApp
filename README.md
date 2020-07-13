@@ -139,8 +139,6 @@ This app will be a walking app! You can see where other people have been taking 
 | username | String | user's display name |
 | password | String | user's account password |
 | profileImage | File | user's display image |
-| posts | List of pointers to Posts | list of posts that the user has made |
-| favorites | List of pointers to Posts | list of posts that the user has liked |
 | location | String | place where user is located |
 
 
