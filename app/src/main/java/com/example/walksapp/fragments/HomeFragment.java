@@ -69,7 +69,7 @@ public class HomeFragment extends Fragment {
         ParseQuery<Walk> query = ParseQuery.getQuery(Walk.class);
         query.include(Walk.KEY_AUTHOR);
         query.setLimit(15);
-        query.addDescendingOrder(Walk.KEY_UPDATED_AT); //maybe use created at instead?
+        query.addDescendingOrder(Walk.KEY_CREATED_AT); //maybe use created at instead?
         query.findInBackground(new FindCallback<Walk>() {
             @Override
             public void done(List<Walk> objects, ParseException e) {

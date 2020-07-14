@@ -1,6 +1,7 @@
 package com.example.walksapp;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 public class WalksAdapter extends RecyclerView.Adapter<WalksAdapter.ViewHolder> {
+
+    public static final String TAG = "WalksAdapter";
 
     Context context;
     List<Walk> walks;
@@ -61,6 +64,8 @@ public class WalksAdapter extends RecyclerView.Adapter<WalksAdapter.ViewHolder> 
             tvName.setText(walk.getName());
             tvLocation.setText(walk.getLocation());
             tvDescription.setText(walk.getDescription());
+
+            Log.i(TAG, walk.getTags().toString());
 
             Glide.with(context).load(walk.getImage().getUrl()).into(ivImage);
 

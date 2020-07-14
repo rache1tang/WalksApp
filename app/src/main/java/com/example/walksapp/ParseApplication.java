@@ -15,6 +15,7 @@ public class ParseApplication extends Application {
 
         // Register parse objects
         ParseObject.registerSubclass(Walk.class);
+        ParseObject.registerSubclass(Tag.class);
 
         // Use for troubleshooting -- remove this line for production
         Parse.setLogLevel(Parse.LOG_LEVEL_DEBUG);

@@ -1,11 +1,15 @@
 package com.example.walksapp;
 
+import android.util.Log;
+
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import org.json.JSONArray;
+
+import java.util.Objects;
 
 @ParseClassName("Walk")
 public class Walk extends ParseObject {
@@ -71,4 +75,8 @@ public class Walk extends ParseObject {
         put(KEY_IMG, img);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(getObjectId());
+    }
 }

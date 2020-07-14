@@ -2,59 +2,51 @@ package com.example.walksapp.fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.walksapp.R;
+import com.example.walksapp.SearchWalksAdapter;
+import com.example.walksapp.Tag;
+import com.example.walksapp.Walk;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SearchFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class SearchFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    public static final String TAG = "SearchFragment";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    EditText etSearch;
+    Button btnSearch;
+    RecyclerView rvSearchResults;
+    List<Walk> walks;
+    SearchWalksAdapter adapter;
 
     public SearchFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SearchFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SearchFragment newInstance(String param1, String param2) {
-        SearchFragment fragment = new SearchFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -62,5 +54,72 @@ public class SearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_search, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        rvSearchResults = view.findViewById(R.id.rvSearchResults);
+        etSearch = view.findViewById(R.id.etKeywords);
+        btnSearch = view.findViewById(R.id.btnSearch);
+
+        walks = new ArrayList<>();
+        adapter = new SearchWalksAdapter(getContext(), walks);
+
+        rvSearchResults.setAdapter(adapter);
+        rvSearchResults.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String search = etSearch.getText().toString();
+                List<String> parsed = parseString(search);
+
+                Log.i(TAG, parsed.toString());
+
+                Toast.makeText(getContext(), "search", Toast.LENGTH_SHORT).show();
+
+                queryWalks(parsed);
+            }
+        });
+
+
+    }
+
+    public List<String> parseString(String str) {
+        String stripped = str.toLowerCase().trim();
+        return Arrays.asList(stripped.split(" "));
+    }
+
+    private void queryWalks(List<String> keywords) {
+        ParseQuery<Tag> query = ParseQuery.getQuery(Tag.class);
+        query.include(Tag.KEY_WALK);
+        query.whereContainedIn(Tag.KEY_TAG, keywords);
+        query.findInBackground(new FindCallback<Tag>() {
+            @Override
+            public void done(List<Tag> objects, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "error querying search results", e);
+                    return;
+                }
+                adapter.clear();
+                for (Tag tag : objects) { // TODO: CHANGE TO MAKE MORE EFFICIENT
+                    if (!has(walks, tag.getWalk()))
+                    walks.add(tag.getWalk());
+                }
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private boolean has(List<Walk> walks, Walk walk) {
+        String id = walk.getObjectId();
+        for (Walk item : walks) {
+            if (id.equals(item.getObjectId())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

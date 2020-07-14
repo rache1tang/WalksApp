@@ -15,9 +15,9 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/ivImage"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:id="@+id/ivSearchImage"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="10dp"
@@ -28,39 +28,28 @@
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/tvWalkName"
+            android:id="@+id/tvSearchName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:layout_toEndOf="@+id/ivImage"
+            android:layout_toEndOf="@+id/ivSearchImage"
             android:textSize="24sp"
             android:textStyle="bold"
             tools:text="Name" />
 
         <TextView
-            android:id="@+id/tvWalkLocation"
+            android:id="@+id/tvSearchLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvWalkName"
+            android:layout_below="@+id/tvSearchName"
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
-            android:layout_toEndOf="@+id/ivImage"
+            android:layout_toEndOf="@+id/ivSearchImage"
             android:textStyle="bold"
             tools:text="Location" />
 
-        <TextView
-            android:id="@+id/tvWalkDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvWalkLocation"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_toEndOf="@+id/ivImage"
-            tools:text="Description description description" />
     </RelativeLayout>
 
 
