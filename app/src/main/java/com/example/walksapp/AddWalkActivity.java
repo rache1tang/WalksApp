@@ -38,6 +38,8 @@ public class AddWalkActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // extract info from edit texts
+                // add to new walk object
+                // send over to tags / map activity
             }
         });
     }
