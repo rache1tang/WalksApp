@@ -37,9 +37,9 @@ public class HomeFragment extends Fragment {
     public static final int REQUEST_CODE = 42;
 
     RecyclerView rvWalks;
-    WalksAdapter adapter;
-    List<Walk> walks;
-    ImageView ivAdd;
+    protected WalksAdapter adapter;
+    protected List<Walk> walks;
+    protected ImageView ivAdd;
 
 
     public HomeFragment() {
@@ -101,7 +101,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private void queryWalks() {
+    protected void queryWalks() {
         ParseQuery<Walk> query = ParseQuery.getQuery(Walk.class);
         query.include(Walk.KEY_AUTHOR);
         query.setLimit(15);
