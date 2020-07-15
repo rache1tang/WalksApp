@@ -1,5 +1,6 @@
 package com.example.walksapp.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.walksapp.AddWalkActivity;
 import com.example.walksapp.R;
 import com.example.walksapp.Walk;
 import com.example.walksapp.WalksAdapter;
@@ -61,6 +63,15 @@ public class HomeFragment extends Fragment {
 
         rvWalks.setAdapter(adapter);
         rvWalks.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        ivAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // go to add activity
+                Intent intent = new Intent(getContext(), AddWalkActivity.class);
+                startActivity(intent);
+            }
+        });
 
         queryWalks();
     }

@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
 import com.example.walksapp.fragments.HomeFragment;
 import com.example.walksapp.fragments.ProfileFragment;
