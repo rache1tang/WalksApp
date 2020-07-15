@@ -1,6 +1,9 @@
 package com.example.walksapp;
 
+import android.os.Build;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
@@ -9,6 +12,7 @@ import com.parse.ParseUser;
 
 import org.json.JSONArray;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 @ParseClassName("Walk")
@@ -22,6 +26,7 @@ public class Walk extends ParseObject {
     public static final String KEY_IMG = "image";
     public static final String KEY_UPDATED_AT = "updatedAt";
     public static final String KEY_CREATED_AT = "createdAt";
+    public static final String KEY_LOCATION_LOWER = "locationLower";
 
     public String getName() {
         return getString(KEY_NAME);
@@ -37,6 +42,7 @@ public class Walk extends ParseObject {
 
     public void setLocation(String location) {
         put(KEY_LOCATION, location);
+        put(KEY_LOCATION_LOWER, location.toLowerCase());
     }
 
     public String getDescription() {
@@ -55,16 +61,12 @@ public class Walk extends ParseObject {
         put(KEY_AUTHOR, user);
     }
 
-    public JSONArray getTags() {
-        return getJSONArray(KEY_TAGS);
+    public String getTags() {
+        return getString(KEY_TAGS);
     }
 
-    public void setTag(String tag) {
-        // TODO: COMPLETE
-    }
-
-    public void clearTags() {
-        put(KEY_TAGS, new JSONArray());
+    public void setTags(ArrayList<String> tags) {
+            put(KEY_TAGS, String.join(" ", tags));
     }
 
     public ParseFile getImage() {

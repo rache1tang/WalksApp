@@ -1,5 +1,6 @@
 package com.example.walksapp;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -16,6 +17,7 @@ import org.parceler.Parcels;
 public class AddWalkActivity extends AppCompatActivity {
 
     public static final  String KEY_NEW_WALK = "new_walk";
+    public static final int REQUEST_CODE = 20;
 
     EditText etName;
     EditText etLocation;
@@ -60,8 +62,23 @@ public class AddWalkActivity extends AppCompatActivity {
                 Intent intent = new Intent(AddWalkActivity.this, AddTagsActivity.class);
                 intent.putExtra(KEY_NEW_WALK, Parcels.wrap(walk));
 
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            Walk walk = Parcels.unwrap(data.getParcelableExtra(AddTagsActivity.KEY_FINAL_WALK));
+
+            // send back to home
+            Intent i = new Intent();
+            i.putExtra(KEY_NEW_WALK, Parcels.wrap(walk));
+            setResult(RESULT_OK, i);
+            finish();
+
+        }
     }
 }

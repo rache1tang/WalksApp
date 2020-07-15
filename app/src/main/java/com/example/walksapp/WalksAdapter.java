@@ -45,6 +45,10 @@ public class WalksAdapter extends RecyclerView.Adapter<WalksAdapter.ViewHolder> 
         return walks.size();
     }
 
+    public void clear() {
+        walks.clear();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView ivImage;

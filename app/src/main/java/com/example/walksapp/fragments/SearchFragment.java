@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.example.walksapp.R;
 import com.example.walksapp.SearchWalksAdapter;
-import com.example.walksapp.Tag;
 import com.example.walksapp.Walk;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -26,9 +25,7 @@ import com.parse.ParseQuery;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class SearchFragment extends Fragment {
 
@@ -78,7 +75,7 @@ public class SearchFragment extends Fragment {
 
                 Log.i(TAG, parsed.toString());
 
-                Toast.makeText(getContext(), "search", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), "search", Toast.LENGTH_SHORT).show();
 
                 queryWalks(parsed);
             }
@@ -92,34 +89,43 @@ public class SearchFragment extends Fragment {
         return Arrays.asList(stripped.split(" "));
     }
 
+
     private void queryWalks(List<String> keywords) {
-        ParseQuery<Tag> query = ParseQuery.getQuery(Tag.class);
-        query.include(Tag.KEY_WALK);
-        query.whereContainedIn(Tag.KEY_TAG, keywords);
-        query.findInBackground(new FindCallback<Tag>() {
+        adapter.clear();
+        ParseQuery<Walk> queryTag = ParseQuery.getQuery(Walk.class);
+        queryTag.include(Walk.KEY_AUTHOR);
+        for (String word : keywords) {
+            queryTag.whereContains(Walk.KEY_TAGS, word);
+        }
+
+        ParseQuery<Walk> queryLoc = ParseQuery.getQuery(Walk.class);
+        queryLoc.include(Walk.KEY_AUTHOR);
+        for (String word : keywords) {
+            queryLoc.whereContains(Walk.KEY_LOCATION_LOWER, word);
+        }
+
+        queryTag.findInBackground(new FindCallback<Walk>() {
             @Override
-            public void done(List<Tag> objects, ParseException e) {
+            public void done(List<Walk> objects, ParseException e) {
                 if (e != null) {
                     Log.e(TAG, "error querying search results", e);
                     return;
                 }
-                adapter.clear();
-                for (Tag tag : objects) { // TODO: CHANGE TO MAKE MORE EFFICIENT
-                    if (!has(walks, tag.getWalk()))
-                    walks.add(tag.getWalk());
-                }
+                walks.addAll(objects);
                 adapter.notifyDataSetChanged();
             }
         });
-    }
 
-    private boolean has(List<Walk> walks, Walk walk) {
-        String id = walk.getObjectId();
-        for (Walk item : walks) {
-            if (id.equals(item.getObjectId())) {
-                return true;
+        queryLoc.findInBackground(new FindCallback<Walk>() {
+            @Override
+            public void done(List<Walk> objects, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "error querying search results", e);
+                    return;
+                }
+                walks.addAll(objects);
+                adapter.notifyDataSetChanged();
             }
-        }
-        return false;
+        });
     }
 }

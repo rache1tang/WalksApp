@@ -22,13 +22,19 @@ import com.example.walksapp.WalksAdapter;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.SaveCallback;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.app.Activity.RESULT_OK;
+
 public class HomeFragment extends Fragment {
 
     public static final String TAG = "HomeFragment";
+    public static final int REQUEST_CODE = 42;
 
     RecyclerView rvWalks;
     WalksAdapter adapter;
@@ -69,11 +75,30 @@ public class HomeFragment extends Fragment {
             public void onClick(View view) {
                 // go to add activity
                 Intent intent = new Intent(getContext(), AddWalkActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE);
             }
         });
 
         queryWalks();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            Walk walk = Parcels.unwrap(data.getParcelableExtra(AddWalkActivity.KEY_NEW_WALK));
+            walk.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e != null) {
+                        Log.e(TAG, "error saving new walk", e);
+                    }
+                }
+            });
+
+            // refresh feed so it contains new walk
+            adapter.clear();
+            queryWalks();
+        }
     }
 
     private void queryWalks() {
