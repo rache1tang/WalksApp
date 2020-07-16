@@ -6,12 +6,14 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
     app:cardBackgroundColor="#FFD740"
     app:cardCornerRadius="10dp">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/tvTagName"
@@ -26,5 +28,6 @@
             android:textSize="18sp"
             android:textStyle="bold"
             tools:text="tag" />
+
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

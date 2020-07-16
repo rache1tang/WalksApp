@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.walksapp.R;
@@ -33,6 +34,7 @@ public class SearchFragment extends Fragment {
 
     EditText etSearch;
     Button btnSearch;
+    TextView tvNoResults;
     RecyclerView rvSearchResults;
     List<Walk> walks;
     SearchWalksAdapter adapter;
@@ -60,6 +62,9 @@ public class SearchFragment extends Fragment {
         rvSearchResults = view.findViewById(R.id.rvSearchResults);
         etSearch = view.findViewById(R.id.etKeywords);
         btnSearch = view.findViewById(R.id.btnSearch);
+        tvNoResults = view.findViewById(R.id.tvNoResults);
+
+        tvNoResults.setText("");
 
         walks = new ArrayList<>();
         adapter = new SearchWalksAdapter(getContext(), walks);
@@ -75,8 +80,6 @@ public class SearchFragment extends Fragment {
 
                 Log.i(TAG, parsed.toString());
 
-                //Toast.makeText(getContext(), "search", Toast.LENGTH_SHORT).show();
-
                 queryWalks(parsed);
             }
         });
@@ -90,40 +93,34 @@ public class SearchFragment extends Fragment {
     }
 
 
-    private void queryWalks(List<String> keywords) {
+    private void queryWalks(final List<String> keywords) {
         adapter.clear();
-        ParseQuery<Walk> queryTag = ParseQuery.getQuery(Walk.class);
-        queryTag.include(Walk.KEY_AUTHOR);
-        for (String word : keywords) {
-            queryTag.whereContains(Walk.KEY_TAGS, word);
-        }
-
-        ParseQuery<Walk> queryLoc = ParseQuery.getQuery(Walk.class);
-        queryLoc.include(Walk.KEY_AUTHOR);
-        for (String word : keywords) {
-            queryLoc.whereContains(Walk.KEY_LOCATION_LOWER, word);
-        }
-
-        queryTag.findInBackground(new FindCallback<Walk>() {
+        ParseQuery<Walk> query = ParseQuery.getQuery(Walk.class);
+        query.include(Walk.KEY_AUTHOR);
+        query.findInBackground(new FindCallback<Walk>() {
             @Override
             public void done(List<Walk> objects, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "error querying search results", e);
-                    return;
+                // walk passes if all keywords pass
+                for (Walk walk : objects) {
+                    String allText = walk.getDescription() + " " + walk.getName() + " " + walk.getTags() + " " + walk.getLocation().toLowerCase();
+                    boolean containsAll = true;
+                    for (String word : keywords) {
+                        if (!allText.contains(word)) {
+                            containsAll = false;
+                            break;
+                        }
+                    }
+                    if (containsAll) {
+                        walks.add(walk);
+                    }
                 }
-                walks.addAll(objects);
-                adapter.notifyDataSetChanged();
-            }
-        });
 
-        queryLoc.findInBackground(new FindCallback<Walk>() {
-            @Override
-            public void done(List<Walk> objects, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "error querying search results", e);
-                    return;
+                if (walks.isEmpty()) {
+                    tvNoResults.setText("No Walks Found");
+                } else {
+                    tvNoResults.setText("");
                 }
-                walks.addAll(objects);
+
                 adapter.notifyDataSetChanged();
             }
         });

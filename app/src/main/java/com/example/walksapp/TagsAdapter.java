@@ -2,6 +2,7 @@ package com.example.walksapp;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +52,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
         TextView tvTag;
         CardView cvTagRoot;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull final View itemView) {
             super(itemView);
             tvTag = itemView.findViewById(R.id.tvTagName);
             cvTagRoot = itemView.findViewById(R.id.cvTagRoot);
@@ -62,10 +63,12 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
                     int position = getAdapterPosition();
                     String tag = tags.get(position);
                     if (selected.contains(tag)) {
-                        Toast.makeText(context, "unselect", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(context, "unselect", Toast.LENGTH_SHORT).show();
+                        cvTagRoot.setCardBackgroundColor(Color.parseColor("#FFD740"));
                         selected.remove(tag);
                     } else {
-                        Toast.makeText(context, "select", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(context, "select", Toast.LENGTH_SHORT).show();
+                        cvTagRoot.setCardBackgroundColor(Color.parseColor("#FFAB40"));
                         selected.add(tag);
                     }
                     notifyDataSetChanged();

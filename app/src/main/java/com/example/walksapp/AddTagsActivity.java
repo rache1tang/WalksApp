@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -31,6 +32,7 @@ public class AddTagsActivity extends AppCompatActivity {
     List<String> tags;
     HashSet<String> selected;
     TagsAdapter adapter;
+    ImageView ivTagsCancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,14 @@ public class AddTagsActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         final Walk walk = Parcels.unwrap(intent.getParcelableExtra(AddWalkActivity.KEY_NEW_WALK));
+
+        ivTagsCancel = findViewById(R.id.ivTagsCancel);
+        ivTagsCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         btnCreateWalk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,7 +87,7 @@ public class AddTagsActivity extends AppCompatActivity {
             public void done(List<Walk> objects, ParseException e) {
                 for (Walk walk : objects) {
                     for (String tag : walk.getTags().split(" ")) {
-                        if (!tagSet.contains(tag)) {
+                        if ((!tagSet.contains(tag)) && !tag.equals("")) {
                             tagSet.add(tag);
                             tags.add(tag);
                         }

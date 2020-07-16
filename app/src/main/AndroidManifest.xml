@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".AddTagsActivity"></activity>
+        <activity android:name=".WalkDetailsActivity"></activity>
+        <activity android:name=".AddTagsActivity" />
         <activity android:name=".AddWalkActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".MainActivity" />

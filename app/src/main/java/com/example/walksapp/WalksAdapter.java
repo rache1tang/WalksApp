@@ -1,6 +1,7 @@
 package com.example.walksapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+import org.parceler.Parcels;
+
 import java.util.List;
 
 public class WalksAdapter extends RecyclerView.Adapter<WalksAdapter.ViewHolder> {
 
+    public static final String KEY_DETAILS = "walk_details";
     public static final String TAG = "WalksAdapter";
 
     Context context;
@@ -62,6 +66,19 @@ public class WalksAdapter extends RecyclerView.Adapter<WalksAdapter.ViewHolder> 
             tvName = itemView.findViewById(R.id.tvWalkName);
             tvLocation = itemView.findViewById(R.id.tvWalkLocation);
             tvDescription = itemView.findViewById(R.id.tvWalkDescription);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = getAdapterPosition();
+                    Walk walk = walks.get(position);
+
+                    Intent intent = new Intent(context, WalkDetailsActivity.class);
+                    intent.putExtra(KEY_DETAILS, Parcels.wrap(walk));
+                    context.startActivity(intent);
+
+                }
+            });
         }
 
         public void bind(Walk walk) {

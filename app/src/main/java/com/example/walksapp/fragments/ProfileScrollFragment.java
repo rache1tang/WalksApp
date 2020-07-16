@@ -1,4 +1,4 @@
-package com.example.walksapp;
+package com.example.walksapp.fragments;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +7,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.walksapp.Walk;
 import com.example.walksapp.fragments.HomeFragment;
 import com.parse.FindCallback;
 import com.parse.ParseException;

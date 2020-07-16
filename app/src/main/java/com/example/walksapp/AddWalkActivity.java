@@ -24,6 +24,7 @@ public class AddWalkActivity extends AppCompatActivity {
     EditText etDescription;
     ImageView ivImage;
     Button btnNext;
+    ImageView ivAddCancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,14 @@ public class AddWalkActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_CODE);
             }
         });
+
+        ivAddCancel = findViewById(R.id.ivAddCancel);
+        ivAddCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     @Override
@@ -79,6 +88,8 @@ public class AddWalkActivity extends AppCompatActivity {
             setResult(RESULT_OK, i);
             finish();
 
+        } else {
+            finish();
         }
     }
 }
