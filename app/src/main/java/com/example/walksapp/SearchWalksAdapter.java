@@ -1,6 +1,7 @@
 package com.example.walksapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -60,6 +63,19 @@ public class SearchWalksAdapter extends RecyclerView.Adapter<SearchWalksAdapter.
             ivSearchImg = itemView.findViewById(R.id.ivSearchImage);
             tvSearchLocation = itemView.findViewById(R.id.tvSearchLocation);
             tvSearchName = itemView.findViewById(R.id.tvSearchName);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int pos = getAdapterPosition();
+                    Walk walk = walks.get(pos);
+
+                    Intent intent = new Intent(context, WalkDetailsActivity.class);
+                    intent.putExtra(WalksAdapter.KEY_DETAILS, Parcels.wrap(walk));
+                    context.startActivity(intent);
+
+                }
+            });
 
         }
 

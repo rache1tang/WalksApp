@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.walksapp.fragments.FavoritesFragment;
 import com.example.walksapp.fragments.HomeFragment;
@@ -20,6 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigation;
+    private static int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,16 +37,20 @@ public class MainActivity extends AppCompatActivity {
                 Fragment fragment;
                 switch (item.getItemId()) {
                     case R.id.actionHome:
+                        id = R.id.actionHome;
                         fragment = new HomeFragment();
                         break;
                     case R.id.actionProfile:
+                        id = R.id.actionProfile;
                         fragment = new ProfileFragment();
                         break;
                     case R.id.actionSearch:
+                        id = R.id.actionSearch;
                         fragment = new SearchFragment();
                         break;
                     case R.id.actionFavorites:
                     default:
+                        id = R.id.actionFavorites;
                         fragment = new FavoritesFragment();
 
                 }
@@ -54,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // set default selection
+        id = R.id.actionHome;
         bottomNavigation.setSelectedItemId(R.id.actionHome);
 
     }
@@ -62,8 +69,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == WalksAdapter.WALK_DETAILS_CODE && resultCode == RESULT_OK) {
-            final FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.flContainer, new HomeFragment()).commit();
+            Fragment fragment;
+            switch (id) {
+                case R.id.actionHome:
+                    fragment = new HomeFragment();
+                    break;
+                case R.id.actionProfile:
+                    fragment = new ProfileFragment();
+                    break;
+                case R.id.actionSearch:
+                    fragment = new SearchFragment();
+                    break;
+                case R.id.actionFavorites:
+                default:
+                    fragment = new FavoritesFragment();
+            }
+            getSupportFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).commit();
         }
     }
 }

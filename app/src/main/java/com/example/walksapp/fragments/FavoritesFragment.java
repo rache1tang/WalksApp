@@ -1,6 +1,7 @@
 package com.example.walksapp.fragments;
 
 import android.util.Log;
+import android.view.View;
 
 import com.example.walksapp.Like;
 import com.parse.FindCallback;
@@ -27,6 +28,12 @@ public class FavoritesFragment extends ProfileScrollFragment {
                 }
                 for (Like like : objects) {
                     walks.add(like.getWalk());
+                }
+
+                if (objects.isEmpty()) {
+                    tvNotice.setVisibility(View.VISIBLE);
+                } else {
+                    tvNotice.setVisibility(View.INVISIBLE);
                 }
                 adapter.notifyDataSetChanged();
             }

@@ -38,6 +38,11 @@ public class ProfileScrollFragment extends HomeFragment {
                     Log.e(TAG, "error querying walks");
                     return;
                 }
+                if (objects.isEmpty()) {
+                    tvNotice.setVisibility(View.VISIBLE);
+                } else {
+                    tvNotice.setVisibility(View.INVISIBLE);
+                }
 
                 walks.addAll(objects);
                 adapter.notifyDataSetChanged();

@@ -24,6 +24,7 @@ public class ProfileFragment extends Fragment {
     TextView tvProfileName;
     TextView tvProfileUser;
     TextView tvProfileLoc;
+    ImageView ivSettings;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -48,6 +49,7 @@ public class ProfileFragment extends Fragment {
         tvProfileName = view.findViewById(R.id.tvProfileName);
         tvProfileUser = view.findViewById(R.id.tvProfileUser);
         tvProfileLoc = view.findViewById(R.id.tvProfileLoc);
+        ivSettings = view.findViewById(R.id.ivSettings);
 
         ParseUser user = ParseUser.getCurrentUser();
 
@@ -60,6 +62,13 @@ public class ProfileFragment extends Fragment {
 
         final FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flProfile, fragment).commit();
+
+        ivSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // go to editing activity
+            }
+        });
 
     }
 }
