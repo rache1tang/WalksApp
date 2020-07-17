@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".WalkDetailsActivity">
 
-    <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -23,28 +22,102 @@
             android:layout_marginBottom="4dp"
             android:src="@mipmap/ic_launcher" />
 
+        <ImageView
+            android:id="@+id/ivDetailsBack"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="left"
+            app:srcCompat="@drawable/abc_vector_test" />
+
     </androidx.appcompat.widget.Toolbar>
 
     <ImageView
         android:id="@+id/ivDetailsBackdrop"
         android:layout_width="match_parent"
         android:layout_height="130dp"
-        android:layout_below="@+id/toolbar"
-        android:layout_marginTop="0dp"
+        android:layout_below="@+id/tvDetailsLocation"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="20dp"
         android:scaleType="centerCrop"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
         android:id="@+id/ivDetailsProfile"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_below="@+id/toolbar"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_below="@+id/ivDetailsBackdrop"
         android:layout_alignParentStart="true"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="-40dp"
         android:adjustViewBounds="false"
         android:cropToPadding="false"
         android:scaleType="centerCrop"
         tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/tvDetailsName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        tools:text="Name" />
+
+    <TextView
+        android:id="@+id/tvDetailsLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvDetailsName"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:textSize="18sp"
+        tools:text="location" />
+
+    <ImageView
+        android:id="@+id/ivDetailsHeart"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="55dp"
+        android:layout_toEndOf="@+id/tvDetailsLocation"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/tvDetailsLikes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="60dp"
+        android:layout_toEndOf="@+id/ivDetailsHeart"
+        android:textSize="18sp"
+        tools:text="likes" />
+
+    <TextView
+        android:id="@+id/tvDetailsDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivDetailsProfile"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        tools:text="description" />
+
+    <View
+        android:id="@+id/divider3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/tvDetailsDescription"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="10dp"
+        android:background="?android:attr/listDivider" />
 
 </RelativeLayout>

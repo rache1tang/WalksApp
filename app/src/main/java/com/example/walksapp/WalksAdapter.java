@@ -86,7 +86,7 @@ public class WalksAdapter extends RecyclerView.Adapter<WalksAdapter.ViewHolder> 
             tvLocation.setText(walk.getLocation());
             tvDescription.setText(walk.getDescription());
 
-            Log.i(TAG, walk.getTags().toString());
+            Log.i(TAG, walk.getTags());
 
             Glide.with(context).load(walk.getImage().getUrl()).into(ivImage);
 

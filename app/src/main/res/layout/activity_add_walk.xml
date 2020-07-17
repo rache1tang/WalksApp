@@ -55,7 +55,7 @@
     <EditText
         android:id="@+id/etAddDescription"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/etAddLocation"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
@@ -63,27 +63,32 @@
         android:ems="10"
         android:gravity="start|top"
         android:hint="Description"
-        android:inputType="textMultiLine" />
+        android:inputType="textMultiLine"
+        android:minLines="3" />
 
     <ImageView
         android:id="@+id/ivAddImage"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/btnNext"
         android:layout_below="@+id/etAddDescription"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
         android:scaleType="centerCrop"
-        tools:srcCompat="@drawable/ic_launcher_background" />
+        app:srcCompat="@android:drawable/ic_menu_add" />
 
     <Button
         android:id="@+id/btnNext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ivAddImage"
+        android:layout_alignParentBottom="true"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
         android:background="#FFE57F"
         android:text="next" />
 

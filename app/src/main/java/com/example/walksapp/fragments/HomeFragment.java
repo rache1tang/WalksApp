@@ -85,15 +85,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            Walk walk = Parcels.unwrap(data.getParcelableExtra(AddWalkActivity.KEY_NEW_WALK));
-            walk.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e != null) {
-                        Log.e(TAG, "error saving new walk", e);
-                    }
-                }
-            });
 
             // refresh feed so it contains new walk
             adapter.clear();
