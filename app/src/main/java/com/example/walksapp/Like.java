@@ -9,6 +9,7 @@ public class Like extends ParseObject {
 
     public static final String KEY_WALK = "walk";
     public static final String KEY_USER = "user";
+    public static final String KEY_CREATED_AT = "createdAt";
 
     public Walk getWalk() {
         return (Walk) getParseObject(KEY_WALK);

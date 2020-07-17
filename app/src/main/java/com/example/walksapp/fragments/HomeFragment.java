@@ -14,19 +14,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.walksapp.AddWalkActivity;
+import com.example.walksapp.Like;
 import com.example.walksapp.R;
 import com.example.walksapp.Walk;
 import com.example.walksapp.WalksAdapter;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
@@ -40,6 +44,8 @@ public class HomeFragment extends Fragment {
     protected WalksAdapter adapter;
     protected List<Walk> walks;
     protected ImageView ivAdd;
+    protected HashSet<String> likedWalks;
+    protected TextView tvNotice;
 
 
     public HomeFragment() {
@@ -63,9 +69,11 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         rvWalks = view.findViewById(R.id.rvHome);
         ivAdd = view.findViewById(R.id.ivAddBtn);
+        tvNotice = view.findViewById(R.id.tvNoWalksNotice);
 
         walks = new ArrayList<>();
-        adapter = new WalksAdapter(getContext(), walks);
+        likedWalks = new HashSet<>();
+        adapter = new WalksAdapter(getContext(), walks, likedWalks);
 
         rvWalks.setAdapter(adapter);
         rvWalks.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -80,15 +88,19 @@ public class HomeFragment extends Fragment {
         });
 
         queryWalks();
+        queryLikes();
+
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+        if ((requestCode == REQUEST_CODE || requestCode == WalksAdapter.WALK_DETAILS_CODE) && resultCode == RESULT_OK) {
 
             // refresh feed so it contains new walk
             adapter.clear();
             queryWalks();
+            queryLikes();
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -104,10 +116,35 @@ public class HomeFragment extends Fragment {
                     Log.e(TAG, "error querying walks");
                     return;
                 }
+
+                if (objects.isEmpty()) {
+                    tvNotice.setVisibility(View.VISIBLE);
+                } else {
+                    tvNotice.setVisibility(View.INVISIBLE);
+                }
+
                 walks.addAll(objects);
                 adapter.notifyDataSetChanged();
             }
         });
+
+    }
+
+    protected void queryLikes() {
+        ParseQuery<Like> query = ParseQuery.getQuery(Like.class);
+        query.include(Like.KEY_WALK);
+        query.whereEqualTo(Like.KEY_USER, ParseUser.getCurrentUser());
+
+        List<Like> objects = null;
+        try {
+            objects = query.find();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        for (Like ob : objects) {
+            likedWalks.add(ob.getWalk().getObjectId());
+        }
+        adapter.notifyDataSetChanged();
 
     }
 }

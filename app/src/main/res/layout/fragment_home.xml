@@ -19,4 +19,11 @@
         android:layout_gravity="right|top"
         android:layout_margin="15dp"
         android:src="@android:drawable/ic_input_add" />
+
+    <TextView
+        android:id="@+id/tvNoWalksNotice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="No Walks to Display" />
 </FrameLayout>

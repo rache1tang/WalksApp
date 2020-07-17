@@ -58,6 +58,10 @@ public class WalkDetailsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 likes = 0;
                 like = null;
+
+                Intent i = new Intent();
+                setResult(RESULT_OK, i);
+
                 finish();
             }
         });
@@ -119,8 +123,12 @@ public class WalkDetailsActivity extends AppCompatActivity {
         });
 
         Glide.with(getApplicationContext()).load(walk.getImage().getUrl()).into(ivBackdrop);
-        Glide.with(getApplicationContext()).load(walk.getAuthor().getParseFile("profileImage")
-                .getUrl()).circleCrop().into(ivProfile);
+        try {
+            Glide.with(getApplicationContext()).load(walk.getAuthor().fetchIfNeeded().getParseFile("profileImage")
+                    .getUrl()).circleCrop().into(ivProfile);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     private void liked(Walk walk) throws ParseException {
@@ -129,7 +137,8 @@ public class WalkDetailsActivity extends AppCompatActivity {
         query.whereEqualTo(Like.KEY_WALK, walk);
 
         List<Like> objects = query.find();
-
+        like = null;
+        likes = 0;
         for (Like ob : objects) {
             likes++;
             try {

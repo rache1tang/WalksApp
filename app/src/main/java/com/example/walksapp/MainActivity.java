@@ -1,14 +1,17 @@
 package com.example.walksapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
+import com.example.walksapp.fragments.FavoritesFragment;
 import com.example.walksapp.fragments.HomeFragment;
 import com.example.walksapp.fragments.ProfileFragment;
 import com.example.walksapp.fragments.SearchFragment;
@@ -42,8 +45,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.actionFavorites:
                     default:
-                        // TODO: change to favorites when you make the favorites page
-                        fragment = new HomeFragment();
+                        fragment = new FavoritesFragment();
 
                 }
                 fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
@@ -54,5 +56,14 @@ public class MainActivity extends AppCompatActivity {
         // set default selection
         bottomNavigation.setSelectedItemId(R.id.actionHome);
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == WalksAdapter.WALK_DETAILS_CODE && resultCode == RESULT_OK) {
+            final FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.flContainer, new HomeFragment()).commit();
+        }
     }
 }
