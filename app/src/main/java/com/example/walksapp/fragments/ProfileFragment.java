@@ -1,5 +1,6 @@
 package com.example.walksapp.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.walksapp.EditProfileActivity;
 import com.example.walksapp.R;
 import com.parse.ParseUser;
 
@@ -66,7 +68,8 @@ public class ProfileFragment extends Fragment {
         ivSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // go to editing activity
+                Intent intent = new Intent(getContext(), EditProfileActivity.class);
+                startActivity(intent);
             }
         });
 
