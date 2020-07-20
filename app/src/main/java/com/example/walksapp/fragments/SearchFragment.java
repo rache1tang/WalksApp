@@ -87,13 +87,13 @@ public class SearchFragment extends Fragment {
 
     }
 
-    public List<String> parseString(String str) {
+    public static List<String> parseString(String str) {
         String stripped = str.toLowerCase().trim();
         return Arrays.asList(stripped.split(" "));
     }
 
 
-    private void queryWalks(final List<String> keywords) {
+    private void queryWalks(final List<String> keywords) { // TODO: super inefficient
         adapter.clear();
         ParseQuery<Walk> query = ParseQuery.getQuery(Walk.class);
         query.include(Walk.KEY_AUTHOR);

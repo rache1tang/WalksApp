@@ -1,109 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:orientation="vertical"
-    android:padding="10dp">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <RelativeLayout
+    <androidx.appcompat.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
         <ImageView
-            android:id="@+id/ivEditProfileImg"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:scaleType="centerCrop"
-            tools:srcCompat="@tools:sample/avatars" />
-
-        <EditText
-            android:id="@+id/etEditName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_toEndOf="@+id/ivEditProfileImg"
-            android:ems="10"
-            android:hint="Display Name"
-            android:inputType="textPersonName"
-            tools:text="Name" />
-
-        <EditText
-            android:id="@+id/etEditUser"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/etEditName"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_toEndOf="@+id/ivEditProfileImg"
-            android:ems="10"
-            android:hint="Username"
-            android:inputType="textPersonName"
-            tools:text="Username" />
-
-        <EditText
-            android:id="@+id/etEditLocation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/ivEditProfileImg"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="10dp"
-            android:ems="10"
-            android:hint="Location"
-            android:inputType="textPersonName"
-            tools:text="Location" />
-
-        <View
-            android:id="@+id/divider4"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@+id/etEditLocation"
-            android:layout_marginTop="250dp"
-            android:background="?android:attr/listDivider" />
-
-        <TextView
-            android:id="@+id/tvEditTags"
+            android:id="@+id/toolbar_logo"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/divider4"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:text="Your Tags"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:src="@mipmap/ic_launcher" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvEditTags"
+    </androidx.appcompat.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:layout_below="@id/toolbar">
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:layout_below="@+id/tvEditTags"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="10dp" />
+            android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/btnEditSave"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/rvEditTags"
-            android:layout_marginTop="10dp"
-            android:background="#FFE57F"
-            android:text="Save" />
+            <ImageView
+                android:id="@+id/ivEditProfileImg"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="5dp"
+                android:scaleType="centerCrop"
+                tools:srcCompat="@tools:sample/avatars" />
 
-        <Button
-            android:id="@+id/btnEditLogout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/btnEditSave"
-            android:layout_marginTop="10dp"
-            android:background="#FF80AB"
-            android:text="Logout" />
+            <EditText
+                android:id="@+id/etEditName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_toStartOf="@+id/ivEditExit"
+                android:layout_toEndOf="@+id/ivEditProfileImg"
+                android:ems="10"
+                android:hint="Display Name"
+                android:inputType="textPersonName"
+                tools:text="Name" />
 
-    </RelativeLayout>
-</ScrollView>
+            <EditText
+                android:id="@+id/etEditUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/etEditName"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@+id/ivEditProfileImg"
+                android:ems="10"
+                android:hint="Username"
+                android:inputType="textPersonName"
+                tools:text="Username" />
+
+            <EditText
+                android:id="@+id/etEditLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ivEditProfileImg"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="Location"
+                android:inputType="textPersonName"
+                tools:text="Location" />
+
+            <View
+                android:id="@+id/divider4"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/btnEditPassword"
+                android:layout_marginTop="250dp"
+                android:background="?android:attr/listDivider" />
+
+            <TextView
+                android:id="@+id/tvEditTags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/divider4"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:text="Your Tags"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvEditTags"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_below="@+id/tvEditTags"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp" />
+
+            <Button
+                android:id="@+id/btnEditSave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rvEditTags"
+                android:layout_marginTop="10dp"
+                android:background="#FFE57F"
+                android:text="Save" />
+
+            <Button
+                android:id="@+id/btnEditLogout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/btnEditSave"
+                android:layout_marginTop="10dp"
+                android:background="#FF80AB"
+                android:text="Logout" />
+
+            <EditText
+                android:id="@+id/etEditEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/etEditLocation"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                tools:text="Email" />
+
+            <ImageView
+                android:id="@+id/ivEditExit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+
+            <Button
+                android:id="@+id/btnEditPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/etEditEmail"
+                android:layout_marginTop="10dp"
+                android:text="Change Password" />
+
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

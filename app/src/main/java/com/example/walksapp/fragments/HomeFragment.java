@@ -139,10 +139,13 @@ public class HomeFragment extends Fragment {
         try {
             objects = query.find();
         } catch (ParseException e) {
+            Log.e(TAG, "error querying walks", e);
             e.printStackTrace();
         }
-        for (Like ob : objects) {
-            likedWalks.add(ob.getWalk().getObjectId());
+        if (objects != null) {
+            for (Like ob : objects) {
+                likedWalks.add(ob.getWalk().getObjectId());
+            }
         }
         adapter.notifyDataSetChanged();
 

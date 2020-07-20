@@ -62,6 +62,12 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
                 public void onClick(View view) {
                     int position = getAdapterPosition();
                     String tag = tags.get(position);
+
+                    if (tag.equals("+")) {
+                        Toast.makeText(context, "make new tag", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     if (selected.contains(tag)) {
                         //Toast.makeText(context, "unselect", Toast.LENGTH_SHORT).show();
                         cvTagRoot.setCardBackgroundColor(Color.parseColor("#FFD740"));
@@ -78,6 +84,8 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
 
         public void bind(String tag) {
             tvTag.setText(tag);
+            if (selected.contains(tag))
+                cvTagRoot.setCardBackgroundColor(Color.parseColor("#FFAB40"));
         }
     }
 }

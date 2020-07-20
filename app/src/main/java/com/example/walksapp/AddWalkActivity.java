@@ -54,6 +54,7 @@ public class AddWalkActivity extends AppCompatActivity {
         etDescription = findViewById(R.id.etAddDescription);
         ivImage = findViewById(R.id.ivAddImage);
         btnNext = findViewById(R.id.btnNext);
+        photoFile = null;
 
         ivImage.setImageResource(R.drawable.add_image_icon);
 
@@ -150,7 +151,9 @@ public class AddWalkActivity extends AppCompatActivity {
 
         else if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             Walk walk = Parcels.unwrap(data.getParcelableExtra(AddTagsActivity.KEY_FINAL_WALK));
-            walk.setImage(photoFile);
+            if (photoFile != null) {
+                walk.setImage(photoFile);
+            }
             try {
                 walk.save();
             } catch (ParseException e) {

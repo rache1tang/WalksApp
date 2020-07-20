@@ -93,6 +93,7 @@ public class AddTagsActivity extends AppCompatActivity {
                         }
                     }
                 }
+                tags.add("+");
                 adapter.notifyDataSetChanged();
             }
         });
