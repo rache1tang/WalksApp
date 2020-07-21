@@ -120,4 +120,15 @@
         android:layout_marginTop="10dp"
         android:background="?android:attr/listDivider" />
 
+    <ImageView
+        android:id="@+id/ivDetailsComment"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="56dp"
+        android:layout_toEndOf="@+id/tvDetailsLikes"
+        app:srcCompat="@drawable/ufi_comment"
+        tools:srcCompat="@drawable/ufi_comment" />
+
 </RelativeLayout>

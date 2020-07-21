@@ -22,6 +22,7 @@ import com.example.walksapp.EndlessRecyclerViewScrollListener;
 import com.example.walksapp.Like;
 import com.example.walksapp.R;
 import com.example.walksapp.Walk;
+import com.example.walksapp.WalkDetailsActivity;
 import com.example.walksapp.WalksAdapter;
 import com.parse.FindCallback;
 import com.parse.ParseException;

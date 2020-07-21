@@ -1,5 +1,6 @@
 package com.example.walksapp;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -26,6 +27,7 @@ import java.util.List;
 public class WalkDetailsActivity extends AppCompatActivity {
 
     public static final String TAG = "WalkDetailsActivity";
+    public static final int COMMENT_CODE = 921;
 
     ImageView ivBackdrop;
     ImageView ivProfile;
@@ -35,6 +37,7 @@ public class WalkDetailsActivity extends AppCompatActivity {
     TextView tvLikes;
     TextView tvDescription;
     ImageView ivBack;
+    ImageView ivComment;
 
     private static int likes;
     private static Like like;
@@ -52,6 +55,7 @@ public class WalkDetailsActivity extends AppCompatActivity {
         tvLikes = findViewById(R.id.tvDetailsLikes);
         tvDescription = findViewById(R.id.tvDetailsDescription);
         ivBack = findViewById(R.id.ivDetailsBack);
+        ivComment = findViewById(R.id.ivDetailsComment);
 
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +72,16 @@ public class WalkDetailsActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         final Walk walk = Parcels.unwrap(intent.getParcelableExtra(WalksAdapter.KEY_DETAILS));
+
+        ivComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // go to compose comment activity
+                Intent intent = new Intent(WalkDetailsActivity.this, ComposeCommentActivity.class);
+                intent.putExtra("walk", Parcels.wrap(walk));
+                startActivityForResult(intent, COMMENT_CODE);
+            }
+        });
 
         tvName.setText(walk.getName());
         tvLocation.setText(walk.getLocation());
@@ -151,6 +165,19 @@ public class WalkDetailsActivity extends AppCompatActivity {
             } catch (ParseException ex) {
                 ex.printStackTrace();
             }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == COMMENT_CODE && resultCode == RESULT_OK) {
+            // get comment from intent
+            Comment comment = Parcels.unwrap(data.getParcelableExtra("comment"));
+
+            // TODO: insert into comments recycler view
+
         }
     }
 }
