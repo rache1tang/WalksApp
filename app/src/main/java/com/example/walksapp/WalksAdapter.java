@@ -61,6 +61,7 @@ public class WalksAdapter extends RecyclerView.Adapter<WalksAdapter.ViewHolder> 
 
     public void clear() {
         walks.clear();
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

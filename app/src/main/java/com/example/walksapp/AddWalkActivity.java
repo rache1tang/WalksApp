@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Build;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -72,6 +74,20 @@ public class AddWalkActivity extends AppCompatActivity {
                 String name = etName.getText().toString();
                 String location = etLocation.getText().toString();
                 String  description = etDescription.getText().toString();
+
+                boolean noPass = false;
+
+                if (name.isEmpty() || name.equals("Required Field")) {
+                    noPass = true;
+                    //Toast.makeText(getApplicationContext(), "Name is Required", Toast.LENGTH_SHORT).show();
+                    etName.setHintTextColor(Color.parseColor("#FF0000"));
+                }
+                if (location.isEmpty() || location.equals("Required Field")) {
+                    noPass = true;
+                    //Toast.makeText(getApplicationContext(), "Location is Required", Toast.LENGTH_SHORT).show();
+                    etLocation.setHintTextColor(Color.parseColor("#FF0000"));
+                }
+                if (noPass) return;
 
                 // add to new walk object
                 Walk walk = new Walk();

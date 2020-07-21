@@ -14,6 +14,7 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.Date;
 import java.util.List;
 
 public class ProfileScrollFragment extends HomeFragment {
@@ -43,9 +44,10 @@ public class ProfileScrollFragment extends HomeFragment {
                 } else {
                     tvNotice.setVisibility(View.INVISIBLE);
                 }
-
+                adapter.clear();
                 walks.addAll(objects);
                 adapter.notifyDataSetChanged();
+                swipeContainer.setRefreshing(false);
             }
         });
     }

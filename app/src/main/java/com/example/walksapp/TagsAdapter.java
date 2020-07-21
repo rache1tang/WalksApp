@@ -3,9 +3,13 @@ package com.example.walksapp;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +26,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
     Context context;
     List<String> tags;
     HashSet<String> selected;
+    PopupWindow popup;
 
     public TagsAdapter(Context context, List<String> tags, HashSet<String> selected) {
         this.context = context;
@@ -64,17 +69,41 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
                     String tag = tags.get(position);
 
                     if (tag.equals("+")) {
-                        Toast.makeText(context, "make new tag", Toast.LENGTH_SHORT).show();
+                        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        final View popupView = inflater.inflate(R.layout.popup_add_tag, null);
+                        popup = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+                        final EditText etNewTag = popupView.findViewById(R.id.etNewTag);
+
+                        Button btnCancel = popupView.findViewById(R.id.btnAddCancel);
+                        btnCancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                popup.dismiss();
+                            }
+                        });
+
+                        Button btnAdd = popupView.findViewById(R.id.btnAddTag);
+                        btnAdd.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                String newTag = etNewTag.getText().toString();
+                                tags.add(tags.size() - 1, newTag);
+                                selected.add(newTag);
+                                notifyDataSetChanged();
+                                popup.dismiss();
+                            }
+                        });
+                        popup.setFocusable(true);
+                        popup.update();
+                        popup.setAnimationStyle(R.style.Animation);
+                        popup.showAtLocation(itemView, Gravity.CENTER, 0, 0);
                         return;
                     }
 
                     if (selected.contains(tag)) {
-                        //Toast.makeText(context, "unselect", Toast.LENGTH_SHORT).show();
-                        cvTagRoot.setCardBackgroundColor(Color.parseColor("#FFD740"));
                         selected.remove(tag);
                     } else {
-                        //Toast.makeText(context, "select", Toast.LENGTH_SHORT).show();
-                        cvTagRoot.setCardBackgroundColor(Color.parseColor("#FFAB40"));
                         selected.add(tag);
                     }
                     notifyDataSetChanged();
@@ -86,6 +115,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
             tvTag.setText(tag);
             if (selected.contains(tag))
                 cvTagRoot.setCardBackgroundColor(Color.parseColor("#FFAB40"));
+            else cvTagRoot.setCardBackgroundColor(Color.parseColor("#FFD740"));
         }
     }
 }

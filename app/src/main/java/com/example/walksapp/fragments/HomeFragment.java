@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.walksapp.AddWalkActivity;
+import com.example.walksapp.EndlessRecyclerViewScrollListener;
 import com.example.walksapp.Like;
 import com.example.walksapp.R;
 import com.example.walksapp.Walk;
@@ -30,6 +32,7 @@ import com.parse.SaveCallback;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -46,6 +49,7 @@ public class HomeFragment extends Fragment {
     protected ImageView ivAdd;
     protected HashSet<String> likedWalks;
     protected TextView tvNotice;
+    public SwipeRefreshLayout swipeContainer;
 
 
     public HomeFragment() {
@@ -75,8 +79,28 @@ public class HomeFragment extends Fragment {
         likedWalks = new HashSet<>();
         adapter = new WalksAdapter(getContext(), walks, likedWalks);
 
+        swipeContainer = view.findViewById(R.id.swipeContainer);
+
+        // makes the loading symbol change colors
+        swipeContainer.setColorSchemeColors(
+                getResources().getColor(android.R.color.holo_blue_bright),
+                getResources().getColor(android.R.color.holo_green_light),
+                getResources().getColor(android.R.color.holo_orange_light),
+                getResources().getColor(android.R.color.holo_red_light)
+        );
+
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.i(TAG, "fetching new data");
+                queryWalks();
+            }
+        });
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+
         rvWalks.setAdapter(adapter);
-        rvWalks.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvWalks.setLayoutManager(linearLayoutManager);
 
         ivAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,31 +128,39 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    protected void queryWalks() {
+    protected void queryWalks() { //TODO: super inefficient
+        String userTags = ParseUser.getCurrentUser().getString("tags");
         ParseQuery<Walk> query = ParseQuery.getQuery(Walk.class);
         query.include(Walk.KEY_AUTHOR);
-        query.setLimit(15);
-        query.addDescendingOrder(Walk.KEY_CREATED_AT); //maybe use created at instead?
-        query.findInBackground(new FindCallback<Walk>() {
-            @Override
-            public void done(List<Walk> objects, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "error querying walks");
-                    return;
-                }
-
-                if (objects.isEmpty()) {
-                    tvNotice.setVisibility(View.VISIBLE);
-                } else {
-                    tvNotice.setVisibility(View.INVISIBLE);
-                }
-
-                walks.addAll(objects);
-                adapter.notifyDataSetChanged();
+        query.addDescendingOrder(Walk.KEY_CREATED_AT);
+        List<Walk> objects = null;
+        try {
+            objects = query.find();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        adapter.clear();
+        if (objects != null) {
+            if (objects.isEmpty()) {
+                tvNotice.setVisibility(View.VISIBLE);
+            } else {
+                tvNotice.setVisibility(View.INVISIBLE);
             }
-        });
+            for (Walk ob : objects) {
+                List<String> tags = SearchFragment.parseString(ob.getTags());
+                for (String tag : tags) {
+                    if (userTags.contains(tag)) {
+                        walks.add(ob);
+                        break;
+                    }
+                }
+            }
+        }
+        adapter.notifyDataSetChanged();
+        swipeContainer.setRefreshing(false);
 
     }
+
 
     protected void queryLikes() {
         ParseQuery<Like> query = ParseQuery.getQuery(Like.class);
@@ -148,6 +180,5 @@ public class HomeFragment extends Fragment {
             }
         }
         adapter.notifyDataSetChanged();
-
     }
 }

@@ -9,6 +9,7 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.Date;
 import java.util.List;
 
 public class FavoritesFragment extends ProfileScrollFragment {
@@ -26,6 +27,7 @@ public class FavoritesFragment extends ProfileScrollFragment {
                     Log.e("FavoritesFragment", "error querying favorites", e);
                     return;
                 }
+                adapter.clear();
                 for (Like like : objects) {
                     walks.add(like.getWalk());
                 }
@@ -36,8 +38,8 @@ public class FavoritesFragment extends ProfileScrollFragment {
                     tvNotice.setVisibility(View.INVISIBLE);
                 }
                 adapter.notifyDataSetChanged();
+                swipeContainer.setRefreshing(false);
             }
         });
-
     }
 }
