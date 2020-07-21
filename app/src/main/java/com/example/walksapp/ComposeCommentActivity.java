@@ -82,7 +82,7 @@ public class ComposeCommentActivity extends AppCompatActivity {
 
                 // send comment back to details activity
                 Intent intent = new Intent();
-                intent.putExtra("comment", Parcels.wrap(comment));
+                intent.putExtra("commentNew", Parcels.wrap(comment));
                 setResult(RESULT_OK, intent);
                 finish();
             }

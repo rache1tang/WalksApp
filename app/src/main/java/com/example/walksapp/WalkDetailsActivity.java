@@ -2,6 +2,8 @@ package com.example.walksapp;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import com.parse.SaveCallback;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class WalkDetailsActivity extends AppCompatActivity {
@@ -38,6 +41,12 @@ public class WalkDetailsActivity extends AppCompatActivity {
     TextView tvDescription;
     ImageView ivBack;
     ImageView ivComment;
+
+    RecyclerView rvComments;
+    CommentsAdapter commentsAdapter;
+    List<Comment> comments;
+
+    Walk walk;
 
     private static int likes;
     private static Like like;
@@ -56,6 +65,10 @@ public class WalkDetailsActivity extends AppCompatActivity {
         tvDescription = findViewById(R.id.tvDetailsDescription);
         ivBack = findViewById(R.id.ivDetailsBack);
         ivComment = findViewById(R.id.ivDetailsComment);
+        rvComments = findViewById(R.id.rvComments);
+
+        comments = new ArrayList<>();
+        commentsAdapter = new CommentsAdapter(getApplicationContext(), comments);
 
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +84,7 @@ public class WalkDetailsActivity extends AppCompatActivity {
         });
 
         Intent intent = getIntent();
-        final Walk walk = Parcels.unwrap(intent.getParcelableExtra(WalksAdapter.KEY_DETAILS));
+        walk = Parcels.unwrap(intent.getParcelableExtra(WalksAdapter.KEY_DETAILS));
 
         ivComment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,6 +156,29 @@ public class WalkDetailsActivity extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        rvComments.setAdapter(commentsAdapter);
+        rvComments.setLayoutManager(linearLayoutManager);
+        queryComments();
+    }
+
+    private void queryComments() {
+        ParseQuery<Comment> query = ParseQuery.getQuery(Comment.class);
+        query.whereEqualTo(Comment.KEY_WALK, walk);
+        query.addAscendingOrder("createdAt");
+        query.setLimit(20);
+        query.findInBackground(new FindCallback<Comment>() {
+            @Override
+            public void done(List<Comment> objects, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "error querying comments", e);
+                    return;
+                }
+                comments.addAll(objects);
+                commentsAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void liked(Walk walk) throws ParseException {
@@ -174,9 +210,12 @@ public class WalkDetailsActivity extends AppCompatActivity {
 
         if (requestCode == COMMENT_CODE && resultCode == RESULT_OK) {
             // get comment from intent
-            Comment comment = Parcels.unwrap(data.getParcelableExtra("comment"));
+            Comment comment = Parcels.unwrap(data.getParcelableExtra("commentNew"));
 
-            // TODO: insert into comments recycler view
+            // insert into comments recycler view
+            comments.add(0, comment);
+            commentsAdapter.notifyItemInserted(0);
+            rvComments.scrollToPosition(0);
 
         }
     }
