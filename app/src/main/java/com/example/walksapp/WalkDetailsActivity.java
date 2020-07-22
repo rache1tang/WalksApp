@@ -260,6 +260,7 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
         LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
 
         map.addMarker(new MarkerOptions().position(latLng).title(walk.getLocation()));
-        map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        //map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12.0f));
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12.0f));
     }
 }

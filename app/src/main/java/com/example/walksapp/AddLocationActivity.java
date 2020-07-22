@@ -121,8 +121,8 @@ public class AddLocationActivity extends AppCompatActivity implements OnMapReady
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        LatLng sydney = new LatLng(90, 135);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("North Pole"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
