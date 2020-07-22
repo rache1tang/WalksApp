@@ -131,6 +131,7 @@ public class HomeFragment extends Fragment {
 
     protected void queryWalks() { //TODO: super inefficient
         String userTags = ParseUser.getCurrentUser().getString("tags");
+        Log.i(TAG, "tags: '" + userTags + "'");
         ParseQuery<Walk> query = ParseQuery.getQuery(Walk.class);
         query.include(Walk.KEY_AUTHOR);
         query.addDescendingOrder(Walk.KEY_CREATED_AT);

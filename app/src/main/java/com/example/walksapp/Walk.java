@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi;
 
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
@@ -27,6 +28,7 @@ public class Walk extends ParseObject {
     public static final String KEY_UPDATED_AT = "updatedAt";
     public static final String KEY_CREATED_AT = "createdAt";
     public static final String KEY_LOCATION_LOWER = "locationLower";
+    public static final String KEY_LOCATION_GEO = "locationGeo";
 
     public String getName() {
         return getString(KEY_NAME);
@@ -80,5 +82,13 @@ public class Walk extends ParseObject {
     @Override
     public int hashCode() {
         return Objects.hash(getObjectId());
+    }
+
+    public ParseGeoPoint getLocationGeo() {
+        return getParseGeoPoint(KEY_LOCATION_GEO);
+    }
+
+    public void setLocationGeo(ParseGeoPoint point) {
+        put(KEY_LOCATION_GEO, point);
     }
 }

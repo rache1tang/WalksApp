@@ -15,9 +15,16 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -27,7 +34,7 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WalkDetailsActivity extends AppCompatActivity {
+public class WalkDetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     public static final String TAG = "WalkDetailsActivity";
     public static final int COMMENT_CODE = 921;
@@ -49,6 +56,8 @@ public class WalkDetailsActivity extends AppCompatActivity {
 
     Walk walk;
 
+    GoogleMap map;
+
     private static int likes;
     private static Like like;
 
@@ -68,6 +77,11 @@ public class WalkDetailsActivity extends AppCompatActivity {
         ivComment = findViewById(R.id.ivDetailsComment);
         rvComments = findViewById(R.id.rvComments);
         tvNoComments = findViewById(R.id.tvNoCommentsNotice);
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.detailsMap);
+        mapFragment.getMapAsync(this);
 
         comments = new ArrayList<>();
         commentsAdapter = new CommentsAdapter(getApplicationContext(), comments);
@@ -236,5 +250,16 @@ public class WalkDetailsActivity extends AppCompatActivity {
             tvNoComments.setVisibility(View.INVISIBLE);
 
         }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
+
+        ParseGeoPoint loc = walk.getLocationGeo();
+        LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
+
+        map.addMarker(new MarkerOptions().position(latLng).title(walk.getLocation()));
+        map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
     }
 }

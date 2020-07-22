@@ -119,7 +119,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 // check that all fields are filled out
                 if (name.isEmpty()) Toast.makeText(EditProfileActivity.this, "Name field is required", Toast.LENGTH_SHORT).show();
                 else if (username.isEmpty()) Toast.makeText(EditProfileActivity.this, "Username field is required", Toast.LENGTH_SHORT).show();
-                else if (location.isEmpty()) Toast.makeText(EditProfileActivity.this, "Location field is required", Toast.LENGTH_SHORT).show();
+                //else if (location.isEmpty()) Toast.makeText(EditProfileActivity.this, "Location field is required", Toast.LENGTH_SHORT).show();
                 else if (email.isEmpty()) Toast.makeText(EditProfileActivity.this, "Email field is required", Toast.LENGTH_SHORT).show();
                 else {
                     user.put("name", name);

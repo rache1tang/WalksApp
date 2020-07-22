@@ -27,6 +27,7 @@ import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.parse.ParseGeoPoint;
 
 import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
@@ -104,6 +105,7 @@ public class AddLocationActivity extends AppCompatActivity implements OnMapReady
                 mMap.addMarker(new MarkerOptions().position(latLng).title(place.getName()));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 walk.setLocation(place.getName());
+                walk.setLocationGeo(new ParseGeoPoint(latLng.latitude, latLng.longitude));
             }
 
 

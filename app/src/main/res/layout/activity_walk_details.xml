@@ -31,134 +31,157 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <ImageView
-        android:id="@+id/ivDetailsBackdrop"
-        android:layout_width="match_parent"
-        android:layout_height="130dp"
-        android:layout_below="@+id/tvDetailsLocation"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="20dp"
-        android:scaleType="centerCrop"
-        tools:srcCompat="@tools:sample/avatars" />
 
-    <ImageView
-        android:id="@+id/ivDetailsProfile"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_below="@+id/ivDetailsBackdrop"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="-40dp"
-        android:adjustViewBounds="false"
-        android:cropToPadding="false"
-        android:scaleType="centerCrop"
-        tools:srcCompat="@tools:sample/avatars" />
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:orientation="vertical"
+        android:layout_below="@id/toolbar">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tvDetailsName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        tools:text="Name" />
+            <ImageView
+                android:id="@+id/ivDetailsBackdrop"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:layout_below="@+id/tvDetailsLocation"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="20dp"
+                android:scaleType="centerCrop"
+                tools:srcCompat="@tools:sample/avatars" />
 
-    <TextView
-        android:id="@+id/tvDetailsLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvDetailsName"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:textSize="18sp"
-        tools:text="location" />
+            <ImageView
+                android:id="@+id/ivDetailsProfile"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_below="@+id/ivDetailsBackdrop"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="-40dp"
+                android:adjustViewBounds="false"
+                android:cropToPadding="false"
+                android:scaleType="centerCrop"
+                tools:srcCompat="@tools:sample/avatars" />
 
-    <ImageView
-        android:id="@+id/ivDetailsHeart"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_below="@+id/toolbar"
-        android:layout_marginStart="120dp"
-        android:layout_marginTop="55dp"
-        android:layout_toEndOf="@+id/tvDetailsLocation"
-        tools:srcCompat="@tools:sample/avatars" />
+            <TextView
+                android:id="@+id/tvDetailsName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                tools:text="Name" />
 
-    <TextView
-        android:id="@+id/tvDetailsLikes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="60dp"
-        android:layout_toEndOf="@+id/ivDetailsHeart"
-        android:textSize="18sp"
-        tools:text="likes" />
+            <TextView
+                android:id="@+id/tvDetailsLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvDetailsName"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:textSize="18sp"
+                tools:text="location" />
 
-    <TextView
-        android:id="@+id/tvDetailsDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ivDetailsProfile"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        tools:text="description" />
+            <ImageView
+                android:id="@+id/ivDetailsHeart"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="120dp"
+                android:layout_marginTop="55dp"
+                android:layout_toEndOf="@+id/tvDetailsLocation"
+                tools:srcCompat="@tools:sample/avatars" />
 
-    <View
-        android:id="@+id/divider3"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@+id/tvDetailsDescription"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="10dp"
-        android:background="?android:attr/listDivider" />
+            <TextView
+                android:id="@+id/tvDetailsLikes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="60dp"
+                android:layout_toEndOf="@+id/ivDetailsHeart"
+                android:textSize="18sp"
+                tools:text="likes" />
 
-    <ImageView
-        android:id="@+id/ivDetailsComment"
-        android:layout_width="33dp"
-        android:layout_height="33dp"
-        android:layout_below="@+id/toolbar"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="56dp"
-        android:layout_toEndOf="@+id/tvDetailsLikes"
-        app:srcCompat="@drawable/ufi_comment"
-        tools:srcCompat="@drawable/ufi_comment" />
+            <TextView
+                android:id="@+id/tvDetailsDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ivDetailsProfile"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                tools:text="description" />
 
-    <TextView
-        android:id="@+id/tvDisplayComments"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/divider3"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="15dp"
-        android:text="Comments"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/tvDetailsDescription"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="10dp"
+                android:background="?android:attr/listDivider" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvComments"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_below="@+id/tvDisplayComments"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="5dp"
-        android:padding="15dp" />
+            <ImageView
+                android:id="@+id/ivDetailsComment"
+                android:layout_width="33dp"
+                android:layout_height="33dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="56dp"
+                android:layout_toEndOf="@+id/tvDetailsLikes"
+                app:srcCompat="@drawable/ufi_comment"
+                tools:srcCompat="@drawable/ufi_comment" />
 
-    <TextView
-        android:id="@+id/tvNoCommentsNotice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/rvComments"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"
-        android:text="No Comments" />
+            <TextView
+                android:id="@+id/tvDisplayComments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/divider3"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp"
+                android:text="Comments"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvComments"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_below="@+id/tvDisplayComments"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="5dp"
+                android:padding="15dp" />
+
+            <TextView
+                android:id="@+id/tvNoCommentsNotice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/rvComments"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="80dp"
+                android:text="No Comments" />
+
+            <fragment
+                android:id="@+id/detailsMap"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_below="@id/rvComments"
+                android:layout_margin="10dp"
+                android:layout_marginStart="100dp"
+                android:layout_marginTop="100dp"
+                android:layout_marginEnd="100dp"
+                android:layout_marginBottom="100dp"
+                tools:context="com.example.mapwithmarker.MapsMarkerActivity" />
+        </RelativeLayout>
+    </ScrollView>
 
 </RelativeLayout>
