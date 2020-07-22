@@ -41,7 +41,7 @@
         android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/etAddLocation"
+        android:id="@+id/etAddDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/etAddName"
@@ -49,22 +49,10 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:ems="10"
-        android:hint="What city?"
-        android:inputType="textPersonName" />
-
-    <EditText
-        android:id="@+id/etAddDescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/etAddLocation"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:ems="10"
         android:gravity="start|top"
         android:hint="Description"
         android:inputType="textMultiLine"
-        android:minLines="3" />
+        android:minLines="5" />
 
     <ImageView
         android:id="@+id/ivAddImage"
@@ -89,7 +77,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        android:background="#FFE57F"
+        android:backgroundTint="#FFE57F"
         android:text="next" />
 
     <ImageView

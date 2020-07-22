@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class AddTagsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class AddTagsActivity extends AppCompatActivity {
 
     public static final String TAG = "AddTagsActivity";
     public static final String KEY_FINAL_WALK = "new_walk_final";
@@ -40,17 +40,10 @@ public class AddTagsActivity extends AppCompatActivity implements OnMapReadyCall
     TagsAdapter adapter;
     ImageView ivTagsCancel;
 
-    private GoogleMap mMap;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_tags);
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
 
         btnCreateWalk = findViewById(R.id.btnCreateWalk);
         rvTags = findViewById(R.id.rvTags);
@@ -66,7 +59,7 @@ public class AddTagsActivity extends AppCompatActivity implements OnMapReadyCall
         queryTags();
 
         Intent intent = getIntent();
-        final Walk walk = Parcels.unwrap(intent.getParcelableExtra(AddWalkActivity.KEY_NEW_WALK));
+        final Walk walk = Parcels.unwrap(intent.getParcelableExtra(AddLocationActivity.KEY_NEW_WALK));
 
         ivTagsCancel = findViewById(R.id.ivTagsCancel);
         ivTagsCancel.setOnClickListener(new View.OnClickListener() {
@@ -81,7 +74,7 @@ public class AddTagsActivity extends AppCompatActivity implements OnMapReadyCall
             public void onClick(View view) {
                 walk.setTags(new ArrayList<>(selected));
 
-                // send back to last activity to send to home
+                // send back to last activity to send to location activity
                 Intent i = new Intent();
                 i.putExtra(KEY_FINAL_WALK, Parcels.wrap(walk));
                 setResult(RESULT_OK, i);
@@ -90,16 +83,6 @@ public class AddTagsActivity extends AppCompatActivity implements OnMapReadyCall
             }
         });
 
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
     private void queryTags() {

@@ -39,7 +39,6 @@ public class AddWalkActivity extends AppCompatActivity {
     public final static int PICK_PHOTO_CODE = 1046;
 
     EditText etName;
-    EditText etLocation;
     EditText etDescription;
     ImageView ivImage;
     Button btnNext;
@@ -52,7 +51,6 @@ public class AddWalkActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_walk);
 
         etName = findViewById(R.id.etAddName);
-        etLocation = findViewById(R.id.etAddLocation);
         etDescription = findViewById(R.id.etAddDescription);
         ivImage = findViewById(R.id.ivAddImage);
         btnNext = findViewById(R.id.btnNext);
@@ -72,7 +70,6 @@ public class AddWalkActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // extract info from edit texts
                 String name = etName.getText().toString();
-                String location = etLocation.getText().toString();
                 String  description = etDescription.getText().toString();
 
                 boolean noPass = false;
@@ -82,11 +79,6 @@ public class AddWalkActivity extends AppCompatActivity {
                     //Toast.makeText(getApplicationContext(), "Name is Required", Toast.LENGTH_SHORT).show();
                     etName.setHintTextColor(Color.parseColor("#FF0000"));
                 }
-                if (location.isEmpty() || location.equals("Required Field")) {
-                    noPass = true;
-                    //Toast.makeText(getApplicationContext(), "Location is Required", Toast.LENGTH_SHORT).show();
-                    etLocation.setHintTextColor(Color.parseColor("#FF0000"));
-                }
                 if (noPass) return;
 
                 // add to new walk object
@@ -94,10 +86,9 @@ public class AddWalkActivity extends AppCompatActivity {
                 walk.setAuthor(ParseUser.getCurrentUser());
                 walk.setDescription(description);
                 walk.setName(name);
-                walk.setLocation(location);
 
                 // send over to tags / map activity
-                Intent intent = new Intent(AddWalkActivity.this, AddTagsActivity.class);
+                Intent intent = new Intent(AddWalkActivity.this, AddLocationActivity.class);
                 intent.putExtra(KEY_NEW_WALK, Parcels.wrap(walk));
 
                 startActivityForResult(intent, REQUEST_CODE);
@@ -166,7 +157,7 @@ public class AddWalkActivity extends AppCompatActivity {
         }
 
         else if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            Walk walk = Parcels.unwrap(data.getParcelableExtra(AddTagsActivity.KEY_FINAL_WALK));
+            Walk walk = Parcels.unwrap(data.getParcelableExtra(AddLocationActivity.KEY_FINAL_WALK));
             if (photoFile != null) {
                 walk.setImage(photoFile);
             }
