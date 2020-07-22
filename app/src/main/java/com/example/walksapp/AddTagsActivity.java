@@ -11,6 +11,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -22,7 +28,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class AddTagsActivity extends AppCompatActivity {
+public class AddTagsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     public static final String TAG = "AddTagsActivity";
     public static final String KEY_FINAL_WALK = "new_walk_final";
@@ -34,10 +40,17 @@ public class AddTagsActivity extends AppCompatActivity {
     TagsAdapter adapter;
     ImageView ivTagsCancel;
 
+    private GoogleMap mMap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_tags);
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
         btnCreateWalk = findViewById(R.id.btnCreateWalk);
         rvTags = findViewById(R.id.rvTags);
@@ -77,6 +90,16 @@ public class AddTagsActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Add a marker in Sydney and move the camera
+        LatLng sydney = new LatLng(-34, 151);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
     private void queryTags() {

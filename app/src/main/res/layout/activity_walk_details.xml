@@ -152,4 +152,13 @@
         android:layout_marginTop="5dp"
         android:padding="15dp" />
 
+    <TextView
+        android:id="@+id/tvNoCommentsNotice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/rvComments"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:text="No Comments" />
+
 </RelativeLayout>

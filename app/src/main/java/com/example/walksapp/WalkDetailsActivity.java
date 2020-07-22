@@ -45,6 +45,7 @@ public class WalkDetailsActivity extends AppCompatActivity {
     RecyclerView rvComments;
     CommentsAdapter commentsAdapter;
     List<Comment> comments;
+    TextView tvNoComments;
 
     Walk walk;
 
@@ -66,6 +67,7 @@ public class WalkDetailsActivity extends AppCompatActivity {
         ivBack = findViewById(R.id.ivDetailsBack);
         ivComment = findViewById(R.id.ivDetailsComment);
         rvComments = findViewById(R.id.rvComments);
+        tvNoComments = findViewById(R.id.tvNoCommentsNotice);
 
         comments = new ArrayList<>();
         commentsAdapter = new CommentsAdapter(getApplicationContext(), comments);
@@ -112,6 +114,16 @@ public class WalkDetailsActivity extends AppCompatActivity {
         } else {
             ivHeart.setImageResource(R.drawable.ic_vector_heart_stroke);
         }
+
+        ivProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // view profile
+                Intent i = new Intent(WalkDetailsActivity.this, ViewProfileActivity.class);
+                i.putExtra("author", Parcels.wrap(walk.getAuthor()));
+                startActivity(i);
+            }
+        });
 
         ivHeart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,6 +187,10 @@ public class WalkDetailsActivity extends AppCompatActivity {
                     Log.e(TAG, "error querying comments", e);
                     return;
                 }
+                if (objects.isEmpty())
+                    tvNoComments.setVisibility(View.VISIBLE);
+                else
+                    tvNoComments.setVisibility(View.INVISIBLE);
                 comments.addAll(objects);
                 commentsAdapter.notifyDataSetChanged();
             }
@@ -216,6 +232,8 @@ public class WalkDetailsActivity extends AppCompatActivity {
             comments.add(0, comment);
             commentsAdapter.notifyItemInserted(0);
             rvComments.scrollToPosition(0);
+
+            tvNoComments.setVisibility(View.INVISIBLE);
 
         }
     }

@@ -82,6 +82,7 @@ public class SignUpActivity extends AppCompatActivity {
             public void done(ParseException e) {
                 if (e != null) {
                     Log.e(TAG, "error saving new user", e);
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 Toast.makeText(getApplicationContext(), "Sign in to use app!", Toast.LENGTH_SHORT).show();

@@ -48,7 +48,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="276dp"
+        android:layout_marginTop="300dp"
         android:layout_marginEnd="1dp"
         android:background="?android:attr/listDivider" />
 
@@ -97,4 +97,14 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_below="@id/tvMapTitle"
+        android:layout_margin="10dp"
+        tools:context=".MapsActivity" />
+
 </RelativeLayout>

@@ -147,6 +147,12 @@ public class HomeFragment extends Fragment {
             } else {
                 tvNotice.setVisibility(View.INVISIBLE);
             }
+            if (userTags.isEmpty()) {
+                walks.addAll(objects);
+                adapter.notifyDataSetChanged();
+                swipeContainer.setRefreshing(false);
+                return;
+            }
             for (Walk ob : objects) {
                 List<String> tags = SearchFragment.parseString(ob.getTags());
                 for (String tag : tags) {

@@ -95,5 +95,12 @@ public class ComposeCommentActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        btnPhotos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // go to select photos
+            }
+        });
     }
 }
