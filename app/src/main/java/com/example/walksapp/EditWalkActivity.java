@@ -165,13 +165,15 @@ public class EditWalkActivity extends AppCompatActivity {
                 String newDescription = etDescription.getText().toString();
                 walk.put("description", newDescription);
                 walk.setTags(new ArrayList<>(selected));
-                Intent i = new Intent();
-                i.putExtra(KEY_EDITED, Parcels.wrap(walk));
-                i.putExtra("photo", Parcels.wrap(bitmapBytes));
-                setResult(RESULT_OK, i);
-
-                Log.i(TAG, walk.getName() + walk.getDescription());
-
+                if (photoFile != null) walk.setImage(photoFile);
+                walk.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            Log.e(TAG, "error saving walk", e);
+                        }
+                    }
+                });
                 finish();
             }
         });
@@ -251,7 +253,7 @@ public class EditWalkActivity extends AppCompatActivity {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             selectedImage.compress(Bitmap.CompressFormat.PNG, 0, stream);
             bitmapBytes = stream.toByteArray();
-            // photoFile = new ParseFile(bitmapBytes);
+            photoFile = new ParseFile(bitmapBytes);
 
             // Load the selected image into a preview
             ivBanner.setImageBitmap(selectedImage);

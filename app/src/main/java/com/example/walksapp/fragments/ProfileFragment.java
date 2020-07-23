@@ -58,7 +58,7 @@ public class ProfileFragment extends Fragment {
         tvProfileName.setText(user.getString("name"));
         tvProfileLoc.setText(user.getString("location"));
         tvProfileUser.setText("@"+ user.getUsername());
-        Glide.with(getContext()).load(user.getParseFile("profileImage").getUrl()).into(ivProfileImg);
+        Glide.with(getContext()).load(user.getParseFile("profileImage").getUrl()).circleCrop().into(ivProfileImg);
 
         Fragment fragment = new ProfileScrollFragment();
 

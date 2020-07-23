@@ -274,22 +274,6 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
 
             tvNoComments.setVisibility(View.INVISIBLE);
 
-        } else if (requestCode == EDIT_CODE && resultCode == RESULT_OK) {
-            Walk edited = Parcels.unwrap(data.getParcelableExtra(EditWalkActivity.KEY_EDITED));
-
-            edited.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e != null) {
-                        Log.e(TAG, "error saving walk", e);
-                    }
-                }
-            });
-
-            // change the edited fields of walk
-            tvName.setText(edited.getName());
-            tvDescription.setText(edited.getDescription());
-            Glide.with(getApplicationContext()).load(edited.getImage().getUrl()).into(ivBackdrop);
         } else if (resultCode == RESULT_CANCELED) {
             finish();
         }
