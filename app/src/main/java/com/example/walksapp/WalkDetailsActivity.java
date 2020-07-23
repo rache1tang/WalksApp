@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -289,6 +290,8 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
             tvName.setText(edited.getName());
             tvDescription.setText(edited.getDescription());
             Glide.with(getApplicationContext()).load(edited.getImage().getUrl()).into(ivBackdrop);
+        } else if (resultCode == RESULT_CANCELED) {
+            finish();
         }
     }
 
