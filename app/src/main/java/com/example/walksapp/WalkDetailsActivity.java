@@ -38,6 +38,8 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
 
     public static final String TAG = "WalkDetailsActivity";
     public static final int COMMENT_CODE = 921;
+    public static final int EDIT_CODE = 1999;
+    public static final String KEY_EDIT_WALK = "walkToEdit";
 
     ImageView ivBackdrop;
     ImageView ivProfile;
@@ -48,6 +50,7 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
     TextView tvDescription;
     ImageView ivBack;
     ImageView ivComment;
+    ImageView ivEdit;
 
     RecyclerView rvComments;
     CommentsAdapter commentsAdapter;
@@ -77,6 +80,7 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
         ivComment = findViewById(R.id.ivDetailsComment);
         rvComments = findViewById(R.id.rvComments);
         tvNoComments = findViewById(R.id.tvNoCommentsNotice);
+        ivEdit = findViewById(R.id.ivDetailsEdit);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -101,6 +105,26 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
 
         Intent intent = getIntent();
         walk = Parcels.unwrap(intent.getParcelableExtra(WalksAdapter.KEY_DETAILS));
+
+        try {
+            if (ParseUser.getCurrentUser().fetchIfNeeded().getUsername().equals(walk.getAuthor().getUsername())) {
+                ivEdit.setVisibility(View.VISIBLE);
+            } else {
+                ivEdit.setVisibility(View.INVISIBLE);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        ivEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // go to edit activity
+                Intent intent = new Intent(WalkDetailsActivity.this, EditWalkActivity.class);
+                intent.putExtra(KEY_EDIT_WALK, Parcels.wrap(walk));
+                startActivityForResult(intent, EDIT_CODE);
+            }
+        });
 
         ivComment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -249,6 +273,22 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
 
             tvNoComments.setVisibility(View.INVISIBLE);
 
+        } else if (requestCode == EDIT_CODE && resultCode == RESULT_OK) {
+            Walk edited = Parcels.unwrap(data.getParcelableExtra(EditWalkActivity.KEY_EDITED));
+
+            edited.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e != null) {
+                        Log.e(TAG, "error saving walk", e);
+                    }
+                }
+            });
+
+            // change the edited fields of walk
+            tvName.setText(edited.getName());
+            tvDescription.setText(edited.getDescription());
+            Glide.with(getApplicationContext()).load(edited.getImage().getUrl()).into(ivBackdrop);
         }
     }
 

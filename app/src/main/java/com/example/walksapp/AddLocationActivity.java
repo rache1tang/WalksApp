@@ -103,7 +103,7 @@ public class AddLocationActivity extends AppCompatActivity implements OnMapReady
                 LatLng latLng = place.getLatLng();
                 selectedPlace = place;
                 mMap.addMarker(new MarkerOptions().position(latLng).title(place.getName()));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12.0f));
                 walk.setLocation(place.getName());
                 walk.setLocationGeo(new ParseGeoPoint(latLng.latitude, latLng.longitude));
             }
@@ -121,9 +121,9 @@ public class AddLocationActivity extends AppCompatActivity implements OnMapReady
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(90, 135);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("North Pole"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng pole = new LatLng(90, 135);
+        mMap.addMarker(new MarkerOptions().position(pole).title("North Pole"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(pole));
     }
 
     @Override

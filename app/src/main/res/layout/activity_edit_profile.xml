@@ -48,7 +48,7 @@
                 tools:srcCompat="@tools:sample/avatars" />
 
             <EditText
-                android:id="@+id/etEditName"
+                android:id="@+id/etEditWalkName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -129,7 +129,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/btnEditSave"
                 android:layout_marginTop="10dp"
-                android:background="#FF80AB"
+                android:background="#FF8A80"
                 android:text="Logout" />
 
             <EditText

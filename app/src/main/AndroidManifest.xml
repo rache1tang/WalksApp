@@ -18,7 +18,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".AddLocationActivity"></activity>
+        <activity android:name=".EditWalkActivity"></activity>
+        <activity android:name=".AddLocationActivity" />
         <activity android:name=".ViewProfileActivity" />
         <activity android:name=".ComposeCommentActivity" />
         <activity android:name=".ChangePasswordActivity" />
