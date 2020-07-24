@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.walksapp.fragments.ProfileFragment;
 import com.example.walksapp.fragments.SearchFragment;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -141,6 +142,10 @@ public class EditProfileActivity extends AppCompatActivity {
                             }
                         }
                     });
+
+                    Intent i = new Intent();
+                    setResult(RESULT_OK, i);
+
                     finish();
                 }
             }
@@ -241,6 +246,9 @@ public class EditProfileActivity extends AppCompatActivity {
             selectedImage.compress(Bitmap.CompressFormat.PNG, 0, stream);
             byte[] bitmapBytes = stream.toByteArray();
             photoFile = new ParseFile(bitmapBytes);
+            ProfileFragment.profileFile = new ParseFile(bitmapBytes);
+
+            //Glide.with(getApplicationContext()).load(photoFile.getUrl()).circleCrop().into(ivEditProfile);
 
             // Load the selected image into a preview
             ivEditProfile.setImageBitmap(selectedImage);

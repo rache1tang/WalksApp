@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.walksapp.EditProfileActivity;
 import com.example.walksapp.R;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
+
+import static android.app.Activity.RESULT_OK;
 
 
 public class ProfileFragment extends Fragment {
@@ -27,6 +31,10 @@ public class ProfileFragment extends Fragment {
     TextView tvProfileUser;
     TextView tvProfileLoc;
     ImageView ivSettings;
+
+    public static final int CODE = 37;
+
+    public static ParseFile profileFile;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -69,9 +77,17 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), EditProfileActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, CODE);
             }
         });
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CODE && resultCode == RESULT_OK) {
+            Glide.with(getContext()).load(profileFile.getUrl()).circleCrop().into(ivProfileImg);
+        }
     }
 }

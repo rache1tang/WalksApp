@@ -2,6 +2,7 @@ package com.example.walksapp;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,7 +43,7 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
     public static final int EDIT_CODE = 1999;
     public static final String KEY_EDIT_WALK = "walkToEdit";
 
-    ImageView ivBackdrop;
+    public static ImageView ivBackdrop;
     ImageView ivProfile;
     ImageView ivHeart;
     TextView tvName;
@@ -56,7 +57,14 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
     RecyclerView rvComments;
     CommentsAdapter commentsAdapter;
     List<Comment> comments;
+
+    RecyclerView rvPhotos;
+    PhotosAdapter photosAdapter;
+    List<ParseFile> photos;
+
     TextView tvNoComments;
+
+    public static List<ParseFile> photoFiles;
 
     Walk walk;
 
@@ -70,6 +78,8 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_walk_details);
 
+        photoFiles = new ArrayList<>();
+
         ivBackdrop = findViewById(R.id.ivDetailsBackdrop);
         ivProfile = findViewById(R.id.ivDetailsProfile);
         ivHeart = findViewById(R.id.ivDetailsHeart);
@@ -82,6 +92,7 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
         rvComments = findViewById(R.id.rvComments);
         tvNoComments = findViewById(R.id.tvNoCommentsNotice);
         ivEdit = findViewById(R.id.ivDetailsEdit);
+        rvPhotos = findViewById(R.id.rvPhotos);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -90,6 +101,13 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
 
         comments = new ArrayList<>();
         commentsAdapter = new CommentsAdapter(getApplicationContext(), comments);
+
+        photos = new ArrayList<>();
+        photosAdapter = new PhotosAdapter(getApplicationContext(), photos);
+        GridLayoutManager layout = new GridLayoutManager(WalkDetailsActivity.this, 3);
+
+        rvPhotos.setAdapter(photosAdapter);
+        rvPhotos.setLayoutManager(layout);
 
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,6 +149,7 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
             @Override
             public void onClick(View view) {
                 // go to compose comment activity
+                photoFiles.clear();
                 Intent intent = new Intent(WalkDetailsActivity.this, ComposeCommentActivity.class);
                 intent.putExtra("walk", Parcels.wrap(walk));
                 startActivityForResult(intent, COMMENT_CODE);
@@ -212,6 +231,27 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
         rvComments.setAdapter(commentsAdapter);
         rvComments.setLayoutManager(linearLayoutManager);
         queryComments();
+        queryCommentPhotos();
+    }
+
+    private void queryCommentPhotos() {
+        ParseQuery<CommentPhoto> query = ParseQuery.getQuery(CommentPhoto.class);
+        query.whereEqualTo(CommentPhoto.KEY_WALK, walk);
+        query.setLimit(20);
+        query.addAscendingOrder("createdAt");
+        query.findInBackground(new FindCallback<CommentPhoto>() {
+            @Override
+            public void done(List<CommentPhoto> objects, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "error querying commented photos", e);
+                    return;
+                }
+                for (CommentPhoto ob : objects) {
+                    photos.add(ob.getFile());
+                }
+                photosAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void queryComments() {
@@ -274,6 +314,38 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
 
             tvNoComments.setVisibility(View.INVISIBLE);
 
+            // save comment
+            comment.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e != null) {
+                        Log.e(TAG, "error saving comment", e);
+                    }
+                }
+            });
+
+            for (ParseFile file : photoFiles) {
+                CommentPhoto commentPhoto = new CommentPhoto();
+                commentPhoto.setComment(comment);
+                commentPhoto.setWalk(walk);
+                commentPhoto.setFile(file);
+
+                commentPhoto.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            Log.e(TAG, "error saving commented photo", e);
+                        }
+                    }
+                });
+
+                photos.add(0, file);
+                photosAdapter.notifyItemInserted(0);
+                rvPhotos.scrollToPosition(0);
+            }
+
+        } else if (requestCode == EDIT_CODE && resultCode == RESULT_OK) {
+            return;
         } else if (resultCode == RESULT_CANCELED) {
             finish();
         }
@@ -288,6 +360,6 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
 
         map.addMarker(new MarkerOptions().position(latLng).title(walk.getLocation()));
         //map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12.0f));
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12.0f));
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
     }
 }

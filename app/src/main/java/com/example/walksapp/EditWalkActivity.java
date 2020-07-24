@@ -174,6 +174,9 @@ public class EditWalkActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+                Intent intent = new Intent();
+                setResult(RESULT_OK, intent);
                 finish();
             }
         });
@@ -257,6 +260,7 @@ public class EditWalkActivity extends AppCompatActivity {
 
             // Load the selected image into a preview
             ivBanner.setImageBitmap(selectedImage);
+            WalkDetailsActivity.ivBackdrop.setImageBitmap(selectedImage);
         }
     }
 }

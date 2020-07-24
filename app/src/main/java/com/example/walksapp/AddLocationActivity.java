@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -20,6 +21,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
@@ -103,7 +107,7 @@ public class AddLocationActivity extends AppCompatActivity implements OnMapReady
                 LatLng latLng = place.getLatLng();
                 selectedPlace = place;
                 mMap.addMarker(new MarkerOptions().position(latLng).title(place.getName()));
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12.0f));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
                 walk.setLocation(place.getName());
                 walk.setLocationGeo(new ParseGeoPoint(latLng.latitude, latLng.longitude));
             }
@@ -124,6 +128,11 @@ public class AddLocationActivity extends AppCompatActivity implements OnMapReady
         LatLng pole = new LatLng(90, 135);
         mMap.addMarker(new MarkerOptions().position(pole).title("North Pole"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pole));
+
+        /*Polyline line = mMap.addPolyline(new PolylineOptions()
+                .add(new LatLng(51.5, -0.1), new LatLng(40.7, -74.0))
+                .width(5)
+                .color(Color.RED)); */
     }
 
     @Override

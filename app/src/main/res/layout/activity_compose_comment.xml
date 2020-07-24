@@ -93,4 +93,13 @@
         android:backgroundTint="#FFD180"
         android:text="Add Photos" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCommentPhotos"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_below="@+id/btnCommentPhotos"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="10dp" />
+
 </RelativeLayout>

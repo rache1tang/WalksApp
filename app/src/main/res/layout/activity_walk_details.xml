@@ -188,7 +188,14 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="15dp"
                 android:layout_marginBottom="15dp"
-                app:srcCompat="@android:drawable/ic_menu_edit" />>
+                app:srcCompat="@android:drawable/ic_menu_edit" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvPhotos"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_below="@id/rvComments"
+                android:layout_margin="15dp"/>>
         </RelativeLayout>
     </ScrollView>
 
