@@ -36,6 +36,7 @@ import com.parse.ParseGeoPoint;
 import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -52,10 +53,14 @@ public class AddLocationActivity extends AppCompatActivity implements OnMapReady
     Button btnNext;
     Place selectedPlace = null;
 
+    public static List<LatLng> points;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_location);
+
+        points = new ArrayList<>();
 
         Intent i = getIntent();
         final Walk walk = Parcels.unwrap(i.getParcelableExtra(AddWalkActivity.KEY_NEW_WALK));
@@ -74,6 +79,7 @@ public class AddLocationActivity extends AppCompatActivity implements OnMapReady
                     Toast.makeText(getApplicationContext(), "A location is required", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 Intent intent = new Intent(AddLocationActivity.this, AddTagsActivity.class);
                 intent.putExtra(KEY_NEW_WALK, Parcels.wrap(walk));
                 startActivityForResult(intent, CODE);
@@ -129,10 +135,15 @@ public class AddLocationActivity extends AppCompatActivity implements OnMapReady
         mMap.addMarker(new MarkerOptions().position(pole).title("North Pole"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pole));
 
-        /*Polyline line = mMap.addPolyline(new PolylineOptions()
-                .add(new LatLng(51.5, -0.1), new LatLng(40.7, -74.0))
-                .width(5)
-                .color(Color.RED)); */
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                points.add(latLng);
+
+                PolylineOptions path = new PolylineOptions().addAll(points);
+                mMap.addPolyline(path);
+            }
+        });
     }
 
     @Override

@@ -23,6 +23,7 @@ import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import org.json.JSONException;
 import org.parceler.Parcels;
 
 import java.io.ByteArrayOutputStream;
@@ -161,6 +162,13 @@ public class AddWalkActivity extends AppCompatActivity {
             if (photoFile != null) {
                 walk.setImage(photoFile);
             }
+
+            try {
+                walk.setPath(AddLocationActivity.points);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             try {
                 walk.save();
             } catch (ParseException e) {

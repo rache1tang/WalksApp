@@ -21,7 +21,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -31,6 +33,8 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -69,6 +73,8 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
     Walk walk;
 
     GoogleMap map;
+
+    List<LatLng> path;
 
     private static int likes;
     private static Like like;
@@ -124,6 +130,13 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
 
         Intent intent = getIntent();
         walk = Parcels.unwrap(intent.getParcelableExtra(WalksAdapter.KEY_DETAILS));
+
+        try {
+            if (walk.getPath() != null)
+                translateToLatLng(walk.getPath());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         try {
             if (ParseUser.getCurrentUser().fetchIfNeeded().getUsername().equals(walk.getAuthor().getUsername())) {
@@ -246,6 +259,11 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
                     Log.e(TAG, "error querying commented photos", e);
                     return;
                 }
+                if (objects.isEmpty()) {
+                    rvPhotos.setVisibility(View.INVISIBLE);
+                } else {
+                    rvPhotos.setVisibility(View.VISIBLE);
+                }
                 for (CommentPhoto ob : objects) {
                     photos.add(ob.getFile());
                 }
@@ -330,14 +348,11 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
                 commentPhoto.setWalk(walk);
                 commentPhoto.setFile(file);
 
-                commentPhoto.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e != null) {
-                            Log.e(TAG, "error saving commented photo", e);
-                        }
-                    }
-                });
+                try {
+                    commentPhoto.save();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
 
                 photos.add(0, file);
                 photosAdapter.notifyItemInserted(0);
@@ -358,8 +373,24 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
         ParseGeoPoint loc = walk.getLocationGeo();
         LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
 
-        map.addMarker(new MarkerOptions().position(latLng).title(walk.getLocation()));
-        //map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12.0f));
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
+            map.addMarker(new MarkerOptions().position(latLng).title(walk.getLocation()));
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14.0f));
+
+        if (path != null) {
+            PolylineOptions poly = new PolylineOptions().addAll(path);
+            map.addPolyline(poly);
+        }
+    }
+
+    public void translateToLatLng(JSONArray points) throws JSONException {
+        path = new ArrayList<>();
+
+        for (int i = 0; i < points.length(); i ++) {
+            JSONArray coord = points.getJSONArray(i);
+            double lat = coord.getDouble(0);
+            double lng = coord.getDouble(1);
+            LatLng point = new LatLng(lat, lng);
+            path.add(point);
+        }
     }
 }

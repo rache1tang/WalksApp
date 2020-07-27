@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
@@ -12,8 +13,10 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @ParseClassName("Walk")
@@ -29,6 +32,7 @@ public class Walk extends ParseObject {
     public static final String KEY_CREATED_AT = "createdAt";
     public static final String KEY_LOCATION_LOWER = "locationLower";
     public static final String KEY_LOCATION_GEO = "locationGeo";
+    public static final String KEY_PATH = "path";
 
     public String getName() {
         return getString(KEY_NAME);
@@ -90,5 +94,20 @@ public class Walk extends ParseObject {
 
     public void setLocationGeo(ParseGeoPoint point) {
         put(KEY_LOCATION_GEO, point);
+    }
+
+    public void setPath(List<LatLng> path) throws JSONException {
+        JSONArray jsonPath = new JSONArray();
+        for (LatLng point : path) { // convert each LatLng point to json arrays for storage
+            JSONArray jsonPoint = new JSONArray();
+            jsonPoint.put(point.latitude);
+            jsonPoint.put(point.longitude);
+            jsonPath.put(jsonPoint);
+        }
+        put(KEY_PATH, jsonPath);
+    }
+
+    public JSONArray getPath() {
+        return getJSONArray(KEY_PATH);
     }
 }
