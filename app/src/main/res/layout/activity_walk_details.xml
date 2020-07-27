@@ -18,9 +18,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:src="@mipmap/ic_launcher" />
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/walks" />
 
         <ImageView
             android:id="@+id/ivDetailsBack"
@@ -180,15 +180,15 @@
 
             <ImageView
                 android:id="@+id/ivDetailsEdit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="35dp"
+                android:layout_height="40dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="15dp"
                 android:layout_marginBottom="15dp"
-                app:srcCompat="@android:drawable/ic_menu_edit" />
+                app:srcCompat="@drawable/edit_pencil" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvPhotos"
