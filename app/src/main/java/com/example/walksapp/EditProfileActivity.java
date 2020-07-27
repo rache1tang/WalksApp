@@ -22,22 +22,37 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.walksapp.fragments.ProfileFragment;
 import com.example.walksapp.fragments.SearchFragment;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 
-public class EditProfileActivity extends AppCompatActivity {
+public class EditProfileActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     public static final String TAG = "EditProfileActivity";
 
@@ -60,6 +75,10 @@ public class EditProfileActivity extends AppCompatActivity {
 
     ParseFile photoFile;
 
+    GoogleMap map;
+    ParseUser user;
+    Place selectedPlace;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,13 +86,11 @@ public class EditProfileActivity extends AppCompatActivity {
 
         etName = findViewById(R.id.etEditName);
         etUser = findViewById(R.id.etEditUser);
-        etLocation = findViewById(R.id.etEditLocation);
         etEmail = findViewById(R.id.etEditEmail);
 
-        final ParseUser user = ParseUser.getCurrentUser();
+        user = ParseUser.getCurrentUser();
         etName.setText(user.getString("name"));
         etUser.setText(user.getUsername());
-        etLocation.setText(user.getString("location"));
         etEmail.setText(user.getEmail());
 
         rvEditTags = findViewById(R.id.rvEditTags);
@@ -114,18 +131,15 @@ public class EditProfileActivity extends AppCompatActivity {
                 // save user and refresh page/go back to profile page
                 String name = etName.getText().toString();
                 String username = etUser.getText().toString();
-                String location = etLocation.getText().toString();
                 String email = etEmail.getText().toString();
 
                 // check that all fields are filled out
                 if (name.isEmpty()) Toast.makeText(EditProfileActivity.this, "Name field is required", Toast.LENGTH_SHORT).show();
                 else if (username.isEmpty()) Toast.makeText(EditProfileActivity.this, "Username field is required", Toast.LENGTH_SHORT).show();
-                //else if (location.isEmpty()) Toast.makeText(EditProfileActivity.this, "Location field is required", Toast.LENGTH_SHORT).show();
                 else if (email.isEmpty()) Toast.makeText(EditProfileActivity.this, "Email field is required", Toast.LENGTH_SHORT).show();
                 else {
                     user.put("name", name);
                     user.setUsername(username);
-                    user.put("location", location);
                     user.setEmail(email);
 
                     if (photoFile != null) {
@@ -170,6 +184,41 @@ public class EditProfileActivity extends AppCompatActivity {
                 // go to edit password activity
                 Intent intent = new Intent(EditProfileActivity.this, ChangePasswordActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), getString(R.string.google_maps_api_key), Locale.US);
+        }
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+        // Initialize the AutocompleteSupportFragment.
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.placeAutocomplete);
+
+        // Specify the types of place data to return.
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.LAT_LNG, Place.Field.ID, Place.Field.NAME));
+
+        // Set up a PlaceSelectionListener to handle the response.
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NotNull Place place) {
+                LatLng latLng = place.getLatLng();
+                selectedPlace = place;
+                map.addMarker(new MarkerOptions().position(latLng).title(place.getName()));
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12.0f));
+                user.put("location", place.getName());
+                user.put("locationGeo", new ParseGeoPoint(latLng.latitude, latLng.longitude));
+            }
+
+
+            @Override
+            public void onError(@NotNull Status status) {
+                Log.i(TAG, "An error occurred: " + status);
             }
         });
     }
@@ -254,6 +303,22 @@ public class EditProfileActivity extends AppCompatActivity {
             ivEditProfile.setImageBitmap(selectedImage);
 
 
+        }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
+
+        ParseGeoPoint loc = user.getParseGeoPoint("locationGeo");
+
+        if (loc != null) {
+            LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
+
+            map.addMarker(new MarkerOptions().position(latLng).title(user.getString("location")));
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12.0f));
+        } else {
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0,0), 12.0f));
         }
     }
 }

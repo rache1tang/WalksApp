@@ -42,7 +42,7 @@
         tools:text="username" />
 
     <FrameLayout
-        android:id="@+id/flProfile"
+        android:id="@+id/flProfileScroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tvYourWalks"

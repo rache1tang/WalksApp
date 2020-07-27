@@ -373,8 +373,8 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
         ParseGeoPoint loc = walk.getLocationGeo();
         LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
 
-            map.addMarker(new MarkerOptions().position(latLng).title(walk.getLocation()));
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14.0f));
+        map.addMarker(new MarkerOptions().position(latLng).title(walk.getLocation()));
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14.0f));
 
         if (path != null) {
             PolylineOptions poly = new PolylineOptions().addAll(path);

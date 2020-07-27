@@ -74,24 +74,12 @@
                 android:inputType="textPersonName"
                 tools:text="Username" />
 
-            <EditText
-                android:id="@+id/etEditLocation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/ivEditProfileImg"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="10dp"
-                android:ems="10"
-                android:hint="Location"
-                android:inputType="textPersonName"
-                tools:text="Location" />
-
             <View
                 android:id="@+id/divider4"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_below="@+id/btnEditPassword"
-                android:layout_marginTop="250dp"
+                android:layout_below="@+id/map"
+                android:layout_marginTop="5dp"
                 android:background="?android:attr/listDivider" />
 
             <TextView
@@ -136,7 +124,7 @@
                 android:id="@+id/etEditEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/etEditLocation"
+                android:layout_below="@+id/etEditUser"
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="10dp"
                 android:ems="10"
@@ -160,6 +148,23 @@
                 android:layout_below="@+id/etEditEmail"
                 android:layout_marginTop="10dp"
                 android:text="Change Password" />
+
+            <fragment
+                android:id="@+id/placeAutocomplete"
+                android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/btnEditPassword"
+                android:layout_marginTop="0dp" />
+
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_below="@+id/placeAutocomplete"
+                android:layout_marginTop="0dp"
+                tools:context="com.example.mapwithmarker.MapsMarkerActivity" />
 
         </RelativeLayout>
     </ScrollView>

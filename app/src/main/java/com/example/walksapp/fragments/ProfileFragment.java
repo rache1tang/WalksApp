@@ -71,7 +71,7 @@ public class ProfileFragment extends Fragment {
         Fragment fragment = new ProfileScrollFragment();
 
         final FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flProfile, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.flProfileScroll, fragment).commit();
 
         ivSettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,7 +87,8 @@ public class ProfileFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CODE && resultCode == RESULT_OK) {
-            Glide.with(getContext()).load(profileFile.getUrl()).circleCrop().into(ivProfileImg);
+            if (profileFile != null)
+                Glide.with(getContext()).load(profileFile.getUrl()).circleCrop().into(ivProfileImg);
         }
     }
 }
