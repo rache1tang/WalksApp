@@ -76,6 +76,8 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
 
     List<LatLng> path;
 
+    ParseUser author;
+
     private static int likes;
     private static Like like;
 
@@ -130,6 +132,17 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
 
         Intent intent = getIntent();
         walk = Parcels.unwrap(intent.getParcelableExtra(WalksAdapter.KEY_DETAILS));
+
+        try {
+            author = walk.getAuthor().fetchIfNeeded();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        if (author.getBoolean("private"))
+            ivProfile.setVisibility(View.INVISIBLE);
+        else
+            ivProfile.setVisibility(View.VISIBLE);
 
         try {
             if (walk.getPath() != null)
@@ -233,12 +246,8 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
         });
 
         Glide.with(getApplicationContext()).load(walk.getImage().getUrl()).into(ivBackdrop);
-        try {
-            Glide.with(getApplicationContext()).load(walk.getAuthor().fetchIfNeeded().getParseFile("profileImage")
-                    .getUrl()).circleCrop().into(ivProfile);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        Glide.with(getApplicationContext()).load(author.getParseFile("profileImage")
+                .getUrl()).circleCrop().into(ivProfile);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         rvComments.setAdapter(commentsAdapter);

@@ -15,8 +15,10 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -72,12 +74,14 @@ public class EditProfileActivity extends AppCompatActivity implements OnMapReady
     HashSet<String> selected;
     TagsAdapter adapter;
     Button btnPass;
+    Switch switchPrivacy;
 
     ParseFile photoFile;
 
     GoogleMap map;
     ParseUser user;
     Place selectedPlace;
+    boolean priv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +128,16 @@ public class EditProfileActivity extends AppCompatActivity implements OnMapReady
             }
         });
 
+        switchPrivacy = findViewById(R.id.switchPrivacy);
+        switchPrivacy.setChecked(priv = user.getBoolean("private"));
+        switchPrivacy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                switchPrivacy.setChecked(b);
+                priv = b;
+            }
+        });
+
         btnSave = findViewById(R.id.btnEditSave);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,6 +155,7 @@ public class EditProfileActivity extends AppCompatActivity implements OnMapReady
                     user.put("name", name);
                     user.setUsername(username);
                     user.setEmail(email);
+                    user.put("private", priv);
 
                     if (photoFile != null) {
                         user.put("profileImage", photoFile);
