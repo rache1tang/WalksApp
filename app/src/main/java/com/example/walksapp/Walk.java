@@ -33,6 +33,7 @@ public class Walk extends ParseObject {
     public static final String KEY_LOCATION_LOWER = "locationLower";
     public static final String KEY_LOCATION_GEO = "locationGeo";
     public static final String KEY_PATH = "path";
+    public static final String KEY_LIKERS = "likers";
 
     public String getName() {
         return getString(KEY_NAME);
@@ -109,5 +110,11 @@ public class Walk extends ParseObject {
 
     public JSONArray getPath() {
         return getJSONArray(KEY_PATH);
+    }
+    public JSONArray getLikes() {
+        return getJSONArray(KEY_LIKERS);
+    }
+    public void setLikes(JSONArray likes) {
+        put(KEY_LIKERS, likes);
     }
 }

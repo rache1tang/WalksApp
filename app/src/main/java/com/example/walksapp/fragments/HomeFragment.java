@@ -18,22 +18,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.walksapp.AddWalkActivity;
-import com.example.walksapp.EndlessRecyclerViewScrollListener;
-import com.example.walksapp.Like;
 import com.example.walksapp.R;
 import com.example.walksapp.Walk;
-import com.example.walksapp.WalkDetailsActivity;
 import com.example.walksapp.WalksAdapter;
-import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
-import org.parceler.Parcels;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -72,6 +67,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         rvWalks = view.findViewById(R.id.rvHome);
         ivAdd = view.findViewById(R.id.ivAddBtn);
         tvNotice = view.findViewById(R.id.tvNoWalksNotice);
@@ -171,22 +167,19 @@ public class HomeFragment extends Fragment {
 
 
     protected void queryLikes() {
-        ParseQuery<Like> query = ParseQuery.getQuery(Like.class);
-        query.include(Like.KEY_WALK);
-        query.whereEqualTo(Like.KEY_USER, ParseUser.getCurrentUser());
-
-        List<Like> objects = null;
-        try {
-            objects = query.find();
-        } catch (ParseException e) {
-            Log.e(TAG, "error querying walks", e);
-            e.printStackTrace();
-        }
-        if (objects != null) {
-            for (Like ob : objects) {
-                likedWalks.add(ob.getWalk().getObjectId());
+        ParseUser user = ParseUser.getCurrentUser();
+        JSONArray likes = user.getJSONArray("liked");
+        if (likes != null) {
+            Log.i(TAG, "liked walks: " + likes.toString());
+            for (int i = 0; i < likes.length(); i++) {
+                try {
+                    likedWalks.add(likes.getString(i));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
-        }
+        } else
+            Log.i(TAG, "no");
         adapter.notifyDataSetChanged();
     }
 }

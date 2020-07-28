@@ -38,6 +38,7 @@ import org.json.JSONException;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class WalkDetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -78,16 +79,21 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
 
     ParseUser author;
 
-    private static int likes;
-    private static Like like;
+    JSONArray likers;
+    HashSet<String> likeHash;
+    int likes;
+    String userId;
+    boolean likeBegin;
+    JSONArray likeRes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_walk_details);
 
-        photoFiles = new ArrayList<>();
+        photoFiles = new ArrayList<>(); // set photos to empty array to populate later
 
+        // get references to all components on page
         ivBackdrop = findViewById(R.id.ivDetailsBackdrop);
         ivProfile = findViewById(R.id.ivDetailsProfile);
         ivHeart = findViewById(R.id.ivDetailsHeart);
@@ -107,29 +113,127 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
                 .findFragmentById(R.id.detailsMap);
         mapFragment.getMapAsync(this);
 
+        // set up comments adapter
         comments = new ArrayList<>();
         commentsAdapter = new CommentsAdapter(getApplicationContext(), comments);
 
+        // set up photos adapter
         photos = new ArrayList<>();
         photosAdapter = new PhotosAdapter(getApplicationContext(), photos);
+
+        // set up layout manager
         GridLayoutManager layout = new GridLayoutManager(WalkDetailsActivity.this, 3);
 
+        // bind adapter to recycler view
         rvPhotos.setAdapter(photosAdapter);
         rvPhotos.setLayoutManager(layout);
 
+        // exit details view -- update like if needed
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                likes = 0;
-                like = null;
-
                 Intent i = new Intent();
                 setResult(RESULT_OK, i);
 
+                // delete user from walk if unliked
+                if (!likeHash.contains(userId) && likeBegin) {
+                    // save likes with user
+                    walk.setLikes(likeRes);
+                    walk.saveInBackground(new SaveCallback() { // save walk
+                        @Override
+                        public void done(ParseException e) {
+                            if (e != null) {
+                                Log.e(TAG, "error saving walk", e);
+                            }
+                        }
+                    });
+
+                    // get liked
+                    ParseUser user = ParseUser.getCurrentUser();
+                    JSONArray userLiked = user.getJSONArray("liked");
+
+                    // remove like from user
+                    JSONArray newLike = new JSONArray();
+                    if (userLiked != null) {
+                        for (int j = 0; j < userLiked.length(); j++) {
+                            try {
+                                String likeId = userLiked.getString(j);
+                                if (!likeId.equals(walk.getObjectId()))
+                                    newLike.put(likeId);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    user.put("liked", newLike);
+                    user.saveInBackground(new SaveCallback() { // save user
+                        @Override
+                        public void done(ParseException e) {
+                            if (e != null) {
+                                Log.i(TAG, "error saving user like", e);
+                            }
+                        }
+                    });
+
+                }
+                // save like if liked
+                if (likeHash.contains(userId) && !likeBegin) {
+
+                    // save user to walk
+                    likeRes.put(userId);
+                    walk.setLikes(likeRes);
+                    walk.saveInBackground(new SaveCallback() { // save walk
+                        @Override
+                        public void done(ParseException e) {
+                            if (e != null) {
+                                Log.e(TAG, "error saving walk", e);
+                            }
+                        }
+                    });
+
+                    // save user to walk
+                    likeRes.put(userId);
+                    walk.setLikes(likeRes);
+                    walk.saveInBackground(new SaveCallback() { // save walk
+                        @Override
+                        public void done(ParseException e) {
+                            if (e != null) {
+                                Log.e(TAG, "error saving walk", e);
+                            }
+                        }
+                    });
+
+                    // get liked
+                    ParseUser user = ParseUser.getCurrentUser();
+                    JSONArray userLiked = user.getJSONArray("liked");
+
+                    // new array to store liked walks
+                    JSONArray newLike = new JSONArray();
+                    if (userLiked != null) {
+                        for (int j = 0; j < userLiked.length(); j++) {
+                            try {
+                                newLike.put(userLiked.getString(j));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    newLike.put(walk.getObjectId()); // add walk to liked
+                    user.put("liked", newLike);
+                    user.saveInBackground(new SaveCallback() { // save user
+                        @Override
+                        public void done(ParseException e) {
+                            if (e != null) {
+                                Log.i(TAG, "error saving user like", e);
+                            }
+                        }
+                    });
+                }
                 finish();
             }
         });
 
+        // get walk from intent
         Intent intent = getIntent();
         walk = Parcels.unwrap(intent.getParcelableExtra(WalksAdapter.KEY_DETAILS));
 
@@ -139,11 +243,13 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
             e.printStackTrace();
         }
 
+        // if author's profile setting is on private, profile picture does not show (cannot view profile)
         if (author.getBoolean("private"))
             ivProfile.setVisibility(View.INVISIBLE);
         else
             ivProfile.setVisibility(View.VISIBLE);
 
+        // get latitude and longitude pairs
         try {
             if (walk.getPath() != null)
                 translateToLatLng(walk.getPath());
@@ -151,6 +257,7 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
             e.printStackTrace();
         }
 
+        // if current user is the author of the walk, they can edit it
         try {
             if (ParseUser.getCurrentUser().fetchIfNeeded().getUsername().equals(walk.getAuthor().getUsername())) {
                 ivEdit.setVisibility(View.VISIBLE);
@@ -161,6 +268,7 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
             e.printStackTrace();
         }
 
+        // go to edit activity
         ivEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -171,6 +279,7 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
             }
         });
 
+        // go to compose comment activity
         ivComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -182,23 +291,12 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
             }
         });
 
+        // set text for walk information
         tvName.setText(walk.getName());
         tvLocation.setText(walk.getLocation());
         tvDescription.setText(walk.getDescription());
 
-        try {
-            liked(walk);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        tvLikes.setText(String.valueOf(likes));
-
-        if (like != null) {
-            ivHeart.setImageResource(R.drawable.ic_vector_heart);
-        } else {
-            ivHeart.setImageResource(R.drawable.ic_vector_heart_stroke);
-        }
-
+        // go to author's profile
         ivProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -209,49 +307,64 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
             }
         });
 
+        // get users' objectIDs who have liked this post
+        likers = walk.getLikes();
+        // set number of likes and appearance of heart
+        userId = ParseUser.getCurrentUser().getObjectId();
+        likeHash = new HashSet<>();
+        likeRes = new JSONArray();
+        if (likers != null) {
+            for (int i = 0; i < likers.length(); i++) {
+                try {
+                    String likeId = likers.getString(i);
+                    likeHash.add(likeId);
+                    if (!likeId.equals(userId))
+                        likeRes.put(likeId);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if (likeHash.contains(userId)) {
+            likeBegin = true;
+            ivHeart.setImageResource(R.drawable.ic_vector_heart);
+        } else {
+            likeBegin = false;
+            ivHeart.setImageResource(R.drawable.ic_vector_heart_stroke);
+        }
+        likes = likeHash.size();
+        tvLikes.setText(String.valueOf(likes));
+
+        // like/unlike (toggle image + edit number of likes)
         ivHeart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (like != null) {
-                    ivHeart.setImageResource(R.drawable.ic_vector_heart_stroke);
-                    like.deleteInBackground(new DeleteCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e != null) {
-                                Log.e(TAG, "error deleting like", e);
-                            }
-                        }
-                    });
+                if (likeHash.contains(userId)) { // already liked -- unlike
+                    likeHash.remove(userId);
                     likes--;
-                    like = null;
                     tvLikes.setText(String.valueOf(likes));
-                } else {
-                    ivHeart.setImageResource(R.drawable.ic_vector_heart);
-                    like = new Like();
-                    like.setUser(ParseUser.getCurrentUser());
-                    like.setWalk(walk);
-                    like.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e != null) {
-                                Log.e(TAG, "error saving like", e);
-                            }
-                        }
-                    });
+                    ivHeart.setImageResource(R.drawable.ic_vector_heart_stroke);
+                } else { // like
+                    likeHash.add(userId);
                     likes++;
                     tvLikes.setText(String.valueOf(likes));
+                    ivHeart.setImageResource(R.drawable.ic_vector_heart);
                 }
-
             }
         });
 
+        // load in banner image and profile image for walk
         Glide.with(getApplicationContext()).load(walk.getImage().getUrl()).into(ivBackdrop);
         Glide.with(getApplicationContext()).load(author.getParseFile("profileImage")
                 .getUrl()).circleCrop().into(ivProfile);
 
+
+        // bind comments adapter
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         rvComments.setAdapter(commentsAdapter);
         rvComments.setLayoutManager(linearLayoutManager);
+
+        // query comments and photos
         queryComments();
         queryCommentPhotos();
     }
@@ -303,29 +416,6 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
         });
     }
 
-    private void liked(Walk walk) throws ParseException {
-        ParseQuery<Like> query = ParseQuery.getQuery(Like.class);
-        query.include(Like.KEY_WALK);
-        query.whereEqualTo(Like.KEY_WALK, walk);
-
-        List<Like> objects = query.find();
-        like = null;
-        likes = 0;
-        for (Like ob : objects) {
-            likes++;
-            try {
-                if (ob.getUser().fetchIfNeeded().getUsername().equals(ParseUser.getCurrentUser().getUsername())) {
-                    // Toast.makeText(WalkDetailsActivity.this, "found " + ob.toString(), Toast.LENGTH_SHORT).show();
-                    like = ob;
-
-                    Log.i(TAG, like.toString());
-                }
-            } catch (ParseException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -351,6 +441,7 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
                 }
             });
 
+            // save commented photos
             for (ParseFile file : photoFiles) {
                 CommentPhoto commentPhoto = new CommentPhoto();
                 commentPhoto.setComment(comment);
@@ -358,11 +449,13 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
                 commentPhoto.setFile(file);
 
                 try {
+                    // not in background because parse files need to be saved before using
                     commentPhoto.save();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
+                // insert photo into recycler view
                 photos.add(0, file);
                 photosAdapter.notifyItemInserted(0);
                 rvPhotos.scrollToPosition(0);

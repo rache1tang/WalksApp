@@ -125,4 +125,8 @@ public class SearchFragment extends Fragment {
             }
         });
     }
+
+    private void searchResults(List<String> keywords) {
+
+    }
 }

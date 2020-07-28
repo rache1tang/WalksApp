@@ -15,7 +15,6 @@ public class ParseApplication extends Application {
 
         // Register parse objects
         ParseObject.registerSubclass(Walk.class);
-        ParseObject.registerSubclass(Like.class);
         ParseObject.registerSubclass(Comment.class);
         ParseObject.registerSubclass(CommentPhoto.class);
 
