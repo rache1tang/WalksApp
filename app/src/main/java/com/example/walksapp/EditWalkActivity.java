@@ -138,13 +138,13 @@ public class EditWalkActivity extends AppCompatActivity {
                             public void done(ParseException e) {
                                 if (e != null) {
                                     Log.e(TAG, "error deleting walk", e);
+                                    return;
                                 }
+                                Intent i = new Intent();
+                                setResult(RESULT_CANCELED, i);
+                                finish();
                             }
                         });
-
-                        Intent i = new Intent();
-                        setResult(RESULT_CANCELED, i);
-                        finish();
                     }
                 });
 
@@ -171,13 +171,15 @@ public class EditWalkActivity extends AppCompatActivity {
                     public void done(ParseException e) {
                         if (e != null) {
                             Log.e(TAG, "error saving walk", e);
+                            return;
                         }
+                        Intent intent = new Intent();
+                        setResult(RESULT_OK, intent);
+                        finish();
                     }
                 });
 
-                Intent intent = new Intent();
-                setResult(RESULT_OK, intent);
-                finish();
+
             }
         });
     }

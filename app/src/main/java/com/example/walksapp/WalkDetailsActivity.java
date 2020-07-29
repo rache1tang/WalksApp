@@ -137,6 +137,7 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
 
                 // delete user from walk if unliked
                 if (!likeHash.contains(userId) && likeBegin) {
+
                     // save likes with user
                     walk.setLikes(likeRes);
                     walk.saveInBackground(new SaveCallback() { // save walk
@@ -165,6 +166,10 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
                             }
                         }
                     }
+
+                    // remove from graph of liked walks
+                    Suggest.removeLike(walk.getObjectId(), newLike);
+
                     user.put("liked", newLike);
                     user.saveInBackground(new SaveCallback() { // save user
                         @Override
@@ -191,35 +196,15 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
                         }
                     });
 
-                    // save user to walk
-                    likeRes.put(userId);
-                    walk.setLikes(likeRes);
-                    walk.saveInBackground(new SaveCallback() { // save walk
-                        @Override
-                        public void done(ParseException e) {
-                            if (e != null) {
-                                Log.e(TAG, "error saving walk", e);
-                            }
-                        }
-                    });
-
                     // get liked
                     ParseUser user = ParseUser.getCurrentUser();
                     JSONArray userLiked = user.getJSONArray("liked");
 
-                    // new array to store liked walks
-                    JSONArray newLike = new JSONArray();
-                    if (userLiked != null) {
-                        for (int j = 0; j < userLiked.length(); j++) {
-                            try {
-                                newLike.put(userLiked.getString(j));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                    newLike.put(walk.getObjectId()); // add walk to liked
-                    user.put("liked", newLike);
+                    // add like to graph of likes
+                    Suggest.addLike(walk.getObjectId(), userLiked);
+
+                    userLiked.put(walk.getObjectId()); // add walk to liked
+                    user.put("liked", userLiked);
                     user.saveInBackground(new SaveCallback() { // save user
                         @Override
                         public void done(ParseException e) {

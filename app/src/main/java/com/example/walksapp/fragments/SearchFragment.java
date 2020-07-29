@@ -59,19 +59,24 @@ public class SearchFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // get references to items in layout
         rvSearchResults = view.findViewById(R.id.rvSearchResults);
         etSearch = view.findViewById(R.id.etKeywords);
         btnSearch = view.findViewById(R.id.btnSearch);
         tvNoResults = view.findViewById(R.id.tvNoResults);
 
+        // hide the "no results" text
         tvNoResults.setText("");
 
+        // set up new adapter
         walks = new ArrayList<>();
         adapter = new SearchWalksAdapter(getContext(), walks);
 
+        // bind adapter to recycler view
         rvSearchResults.setAdapter(adapter);
         rvSearchResults.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        // on search, run search algorithm
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,11 +93,11 @@ public class SearchFragment extends Fragment {
     }
 
     public static List<String> parseString(String str) {
-        String stripped = str.toLowerCase().trim();
+        String stripped = str.toLowerCase().trim(); // make everything lowercase (case doesn't matter) and strip white text
         return Arrays.asList(stripped.split(" "));
     }
 
-
+    // TODO: make into a dictionary for easy searching
     private void queryWalks(final List<String> keywords) { // TODO: super inefficient
         adapter.clear();
         ParseQuery<Walk> query = ParseQuery.getQuery(Walk.class);
@@ -115,7 +120,7 @@ public class SearchFragment extends Fragment {
                     }
                 }
 
-                if (walks.isEmpty()) {
+                if (walks.isEmpty()) { // if there are no results
                     tvNoResults.setText("No Walks Found");
                 } else {
                     tvNoResults.setText("");
@@ -124,9 +129,5 @@ public class SearchFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
         });
-    }
-
-    private void searchResults(List<String> keywords) {
-
     }
 }

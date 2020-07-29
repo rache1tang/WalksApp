@@ -45,19 +45,23 @@ public class AddTagsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_tags);
 
+        // get reference to layout items
         btnCreateWalk = findViewById(R.id.btnCreateWalk);
         rvTags = findViewById(R.id.rvTags);
 
+        // set up adapter and layout manager
         tags = new ArrayList<>();
         selected = new HashSet<>();
         adapter = new TagsAdapter(getApplicationContext(), tags, selected);
         GridLayoutManager layout = new GridLayoutManager(AddTagsActivity.this, 3);
 
+        // bind adapter to recycler view
         rvTags.setAdapter(adapter);
         rvTags.setLayoutManager(layout);
 
         queryTags();
 
+        // get walk from intent
         Intent intent = getIntent();
         final Walk walk = Parcels.unwrap(intent.getParcelableExtra(AddLocationActivity.KEY_NEW_WALK));
 
@@ -85,7 +89,8 @@ public class AddTagsActivity extends AppCompatActivity {
 
     }
 
-    private void queryTags() {
+    // TODO: change when implementing JSONobject for search
+    private void queryTags() { // find all tags that exist
         ParseQuery<Walk> query = ParseQuery.getQuery(Walk.class);
         query.findInBackground(new FindCallback<Walk>() {
             HashSet tagSet = new HashSet<>();

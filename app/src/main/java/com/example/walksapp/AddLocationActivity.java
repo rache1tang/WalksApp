@@ -62,6 +62,7 @@ public class AddLocationActivity extends AppCompatActivity implements OnMapReady
 
         points = new ArrayList<>();
 
+        // get walk from intent
         Intent i = getIntent();
         final Walk walk = Parcels.unwrap(i.getParcelableExtra(AddWalkActivity.KEY_NEW_WALK));
 
@@ -80,6 +81,7 @@ public class AddLocationActivity extends AppCompatActivity implements OnMapReady
                     return;
                 }
 
+                // send walk through intent
                 Intent intent = new Intent(AddLocationActivity.this, AddTagsActivity.class);
                 intent.putExtra(KEY_NEW_WALK, Parcels.wrap(walk));
                 startActivityForResult(intent, CODE);
@@ -108,7 +110,7 @@ public class AddLocationActivity extends AppCompatActivity implements OnMapReady
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
-            public void onPlaceSelected(@NotNull Place place) {
+            public void onPlaceSelected(@NotNull Place place) { // zoom to place and set location in walk
                 Log.i(TAG, "Place: " + place.getName() + ", " + place.getId() + ", " + place.getLatLng().toString());
                 LatLng latLng = place.getLatLng();
                 selectedPlace = place;
@@ -130,7 +132,7 @@ public class AddLocationActivity extends AppCompatActivity implements OnMapReady
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
+        // Add a marker in the North Pole and move the camera
         LatLng pole = new LatLng(90, 135);
         mMap.addMarker(new MarkerOptions().position(pole).title("North Pole"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pole));
@@ -138,8 +140,10 @@ public class AddLocationActivity extends AppCompatActivity implements OnMapReady
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
+                // add point to path
                 points.add(latLng);
 
+                // show new part of path
                 PolylineOptions path = new PolylineOptions().addAll(points);
                 mMap.addPolyline(path);
             }
@@ -153,6 +157,7 @@ public class AddLocationActivity extends AppCompatActivity implements OnMapReady
         if (resultCode == RESULT_OK && requestCode == CODE) {
             Parcelable parcelable = data.getParcelableExtra(AddTagsActivity.KEY_FINAL_WALK);
 
+            // send walk back to add walks activity
             Intent i = new Intent();
             i.putExtra(KEY_FINAL_WALK, parcelable);
             setResult(RESULT_OK, i);

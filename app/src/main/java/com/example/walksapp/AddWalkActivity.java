@@ -148,6 +148,7 @@ public class AddWalkActivity extends AppCompatActivity {
             // Load the image located at photoUri into selectedImage
             Bitmap selectedImage = loadFromUri(photoUri);
 
+            // translate bitmap into parse file
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             selectedImage.compress(Bitmap.CompressFormat.PNG, 0, stream);
             byte[] bitmapBytes = stream.toByteArray();
@@ -159,11 +160,11 @@ public class AddWalkActivity extends AppCompatActivity {
 
         else if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             Walk walk = Parcels.unwrap(data.getParcelableExtra(AddLocationActivity.KEY_FINAL_WALK));
-            if (photoFile != null) {
+            if (photoFile != null) { //
                 walk.setImage(photoFile);
             }
 
-            try {
+            try { // save path if one is given (otherwise, save an empty array)
                 walk.setPath(AddLocationActivity.points);
             } catch (JSONException e) {
                 e.printStackTrace();

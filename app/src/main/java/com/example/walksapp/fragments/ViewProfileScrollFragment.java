@@ -20,7 +20,7 @@ public class ViewProfileScrollFragment extends ProfileScrollFragment {
         query.include(Walk.KEY_AUTHOR);
         query.setLimit(15);
         query.whereEqualTo(Walk.KEY_AUTHOR, ViewProfileActivity.user); // filter posts by current user
-        query.addDescendingOrder(Walk.KEY_CREATED_AT); //maybe use created at instead?
+        query.addDescendingOrder(Walk.KEY_CREATED_AT);
         query.findInBackground(new FindCallback<Walk>() {
             @Override
             public void done(List<Walk> objects, ParseException e) {

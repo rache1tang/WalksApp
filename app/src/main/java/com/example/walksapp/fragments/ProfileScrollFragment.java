@@ -31,7 +31,7 @@ public class ProfileScrollFragment extends HomeFragment {
         query.include(Walk.KEY_AUTHOR);
         query.setLimit(15);
         query.whereEqualTo(Walk.KEY_AUTHOR, ParseUser.getCurrentUser()); // filter posts by current user
-        query.addDescendingOrder(Walk.KEY_CREATED_AT); //maybe use created at instead?
+        query.addDescendingOrder(Walk.KEY_CREATED_AT);
         query.findInBackground(new FindCallback<Walk>() {
             @Override
             public void done(List<Walk> objects, ParseException e) {
@@ -39,6 +39,7 @@ public class ProfileScrollFragment extends HomeFragment {
                     Log.e(TAG, "error querying walks");
                     return;
                 }
+                // show if there are no walks to show
                 if (objects.isEmpty()) {
                     tvNotice.setVisibility(View.VISIBLE);
                 } else {
@@ -47,7 +48,7 @@ public class ProfileScrollFragment extends HomeFragment {
                 adapter.clear();
                 walks.addAll(objects);
                 adapter.notifyDataSetChanged();
-                swipeContainer.setRefreshing(false);
+                swipeContainer.setRefreshing(false); // close refresh circle arrow
             }
         });
     }

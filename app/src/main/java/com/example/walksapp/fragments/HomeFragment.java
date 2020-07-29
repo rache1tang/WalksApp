@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.walksapp.AddWalkActivity;
 import com.example.walksapp.R;
+import com.example.walksapp.Suggest;
 import com.example.walksapp.Walk;
 import com.example.walksapp.WalksAdapter;
 import com.parse.ParseException;
@@ -72,6 +73,7 @@ public class HomeFragment extends Fragment {
         ivAdd = view.findViewById(R.id.ivAddBtn);
         tvNotice = view.findViewById(R.id.tvNoWalksNotice);
 
+        // set up new walks adapter
         walks = new ArrayList<>();
         likedWalks = new HashSet<>();
         adapter = new WalksAdapter(getContext(), walks, likedWalks);
@@ -90,24 +92,27 @@ public class HomeFragment extends Fragment {
             @Override
             public void onRefresh() {
                 Log.i(TAG, "fetching new data");
-                queryWalks();
+                queryWalks(); // refresh page
             }
         });
 
+        // make new layout manager
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 
+        // bind layout manager and adapter to recycler view
         rvWalks.setAdapter(adapter);
         rvWalks.setLayoutManager(linearLayoutManager);
 
         ivAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // go to add activity
+                // go to add add walk activity
                 Intent intent = new Intent(getContext(), AddWalkActivity.class);
                 startActivityForResult(intent, REQUEST_CODE);
             }
         });
 
+        // populate adapter
         queryWalks();
         queryLikes();
 
@@ -117,6 +122,7 @@ public class HomeFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if ((requestCode == REQUEST_CODE || requestCode == WalksAdapter.WALK_DETAILS_CODE) && resultCode == RESULT_OK) {
 
+            //TODO: insert into recycler view some other way please
             // refresh feed so it contains new walk
             adapter.clear();
             queryWalks();
@@ -168,7 +174,7 @@ public class HomeFragment extends Fragment {
 
     protected void queryLikes() {
         ParseUser user = ParseUser.getCurrentUser();
-        JSONArray likes = user.getJSONArray("liked");
+        JSONArray likes = user.getJSONArray("liked"); // liked walks are stored as JSONArray
         if (likes != null) {
             Log.i(TAG, "liked walks: " + likes.toString());
             for (int i = 0; i < likes.length(); i++) {

@@ -17,6 +17,7 @@ public class ParseApplication extends Application {
         ParseObject.registerSubclass(Walk.class);
         ParseObject.registerSubclass(Comment.class);
         ParseObject.registerSubclass(CommentPhoto.class);
+        ParseObject.registerSubclass(Data.class);
 
         // Use for troubleshooting -- remove this line for production
         Parse.setLogLevel(Parse.LOG_LEVEL_DEBUG);

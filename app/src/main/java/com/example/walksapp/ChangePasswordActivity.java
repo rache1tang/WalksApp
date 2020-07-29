@@ -23,6 +23,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
 
+        // get references
         etRepeatPass = findViewById(R.id.etReEnterPassword);
         etNewPass = findViewById(R.id.etEnterPassword);
         tvNoMatch = findViewById(R.id.tvPasswordsDiff);
@@ -38,6 +39,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
             }
         });
 
+        // check that the new passwords match and save
         btnSave = findViewById(R.id.btnSavePassword);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -88,7 +88,7 @@ public class ProfileFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CODE && resultCode == RESULT_OK) {
             if (profileFile != null)
-                Glide.with(getContext()).load(profileFile.getUrl()).circleCrop().into(ivProfileImg);
+                Glide.with(getContext()).load(ParseUser.getCurrentUser().getParseFile("profileImage").getUrl()).circleCrop().into(ivProfileImg);
         }
     }
 }

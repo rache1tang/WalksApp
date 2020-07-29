@@ -168,14 +168,13 @@ public class EditProfileActivity extends AppCompatActivity implements OnMapReady
                         public void done(ParseException e) {
                             if (e != null) {
                                 Log.e(TAG, "error saving user", e);
+                                return;
                             }
+                            Intent i = new Intent();
+                            setResult(RESULT_OK, i);
+                            finish();
                         }
                     });
-
-                    Intent i = new Intent();
-                    setResult(RESULT_OK, i);
-
-                    finish();
                 }
             }
         });
