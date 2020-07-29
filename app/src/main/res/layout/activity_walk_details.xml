@@ -39,6 +39,7 @@
         android:fillViewport="true"
         android:orientation="vertical"
         android:layout_below="@id/toolbar">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -176,7 +177,7 @@
                 android:layout_height="300dp"
                 android:layout_below="@id/divider3"
                 android:layout_margin="10dp"
-                tools:context="com.example.mapwithmarker.MapsMarkerActivity"/>
+                tools:context="com.example.mapwithmarker.MapsMarkerActivity" />
 
             <ImageView
                 android:id="@+id/ivDetailsEdit"
@@ -193,9 +194,42 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvPhotos"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="250dp"
                 android:layout_below="@id/rvComments"
-                android:layout_margin="15dp"/>>
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="15dp" />
+
+            <TextView
+                android:id="@+id/tvSuggested"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rvPhotos"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="30dp"
+                android:text="People who liked this also liked"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvSuggested"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_below="@id/tvSuggested"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="15dp" />
+
+            <TextView
+                android:id="@+id/tvNoRelated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/tvSuggested"
+                android:layout_marginTop="98dp"
+                android:text="No Related Walks" />
         </RelativeLayout>
     </ScrollView>
 

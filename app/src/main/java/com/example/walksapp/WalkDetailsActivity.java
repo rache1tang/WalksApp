@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,10 +36,12 @@ import com.parse.SaveCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 public class WalkDetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -58,6 +61,7 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
     ImageView ivBack;
     ImageView ivComment;
     ImageView ivEdit;
+    TextView tvSuggestedNotice;
 
     RecyclerView rvComments;
     CommentsAdapter commentsAdapter;
@@ -67,7 +71,12 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
     PhotosAdapter photosAdapter;
     List<ParseFile> photos;
 
+    RecyclerView rvSuggested;
+    SearchWalksAdapter suggestedAdapter;
+    List<Walk> suggested;
+
     TextView tvNoComments;
+    TextView tvNoRelated;
 
     public static List<ParseFile> photoFiles;
 
@@ -107,6 +116,10 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
         tvNoComments = findViewById(R.id.tvNoCommentsNotice);
         ivEdit = findViewById(R.id.ivDetailsEdit);
         rvPhotos = findViewById(R.id.rvPhotos);
+        rvSuggested = findViewById(R.id.rvSuggested);
+        tvNoRelated = findViewById(R.id.tvNoRelated);
+        tvSuggestedNotice = findViewById(R.id.tvSuggested);
+
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -121,7 +134,17 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
         photos = new ArrayList<>();
         photosAdapter = new PhotosAdapter(getApplicationContext(), photos);
 
-        // set up layout manager
+        // set up suggested adapter
+        suggested = new ArrayList<>();
+        suggestedAdapter = new SearchWalksAdapter(getApplicationContext(), suggested);
+
+        // set up layout manager for suggested
+        LinearLayoutManager layoutManage = new LinearLayoutManager(getApplicationContext());
+        // bind with adapter
+        rvSuggested.setLayoutManager(layoutManage);
+        rvSuggested.setAdapter(suggestedAdapter);
+
+        // set up layout manager for photos
         GridLayoutManager layout = new GridLayoutManager(WalkDetailsActivity.this, 3);
 
         // bind adapter to recycler view
@@ -352,6 +375,37 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
         // query comments and photos
         queryComments();
         queryCommentPhotos();
+
+        // query suggested walks
+        querySuggested();
+    }
+
+    private void querySuggested() {
+        ParseQuery<Walk> query = ParseQuery.getQuery(Walk.class);
+        query.include("*");
+        ParseQuery<Data> queryData = ParseQuery.getQuery(Data.class);
+        queryData.whereEqualTo(Data.KEY_NAME, "suggest");
+        try {
+            final Data suggest = queryData.getFirst();
+            JSONObject data = suggest.getData();
+            if (data.has(walk.getObjectId())) {
+                JSONObject dataWalk = data.getJSONObject(walk.getObjectId());
+                if (dataWalk.length() == 0) {
+                    tvNoRelated.setVisibility(View.VISIBLE);
+                } else {
+                    tvNoRelated.setVisibility(View.INVISIBLE);
+                }
+                for (Iterator<String> it = dataWalk.keys(); it.hasNext(); ) {
+                    String key = it.next();
+                    suggested.add(query.get(key));
+                }
+            } else {
+                tvNoRelated.setVisibility(View.VISIBLE);
+            }
+            suggestedAdapter.notifyDataSetChanged();
+        } catch (ParseException | JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void queryCommentPhotos() {
@@ -366,11 +420,13 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
                     Log.e(TAG, "error querying commented photos", e);
                     return;
                 }
+
                 if (objects.isEmpty()) {
-                    rvPhotos.setVisibility(View.INVISIBLE);
+                    rvPhotos.setVisibility(View.GONE);
                 } else {
                     rvPhotos.setVisibility(View.VISIBLE);
                 }
+
                 for (CommentPhoto ob : objects) {
                     photos.add(ob.getFile());
                 }
@@ -427,7 +483,13 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
             });
 
             // save commented photos
+            if (photoFiles.isEmpty()) {
+                rvPhotos.setVisibility(View.GONE);
+            } else {
+                rvPhotos.setVisibility(View.VISIBLE);
+            }
             for (ParseFile file : photoFiles) {
+
                 CommentPhoto commentPhoto = new CommentPhoto();
                 commentPhoto.setComment(comment);
                 commentPhoto.setWalk(walk);
