@@ -103,7 +103,8 @@ public class SearchFragment extends Fragment {
     }
 
     public static List<String> parseString(String str) {
-        String stripped = str.toLowerCase().trim(); // make everything lowercase (case doesn't matter) and strip white text
+        // make everything lowercase (case doesn't matter) and strip white text and get rid of punctuation
+        String stripped = str.toLowerCase().trim().replaceAll("\\p{Punct}","");
         return Arrays.asList(stripped.split(" "));
     }
 

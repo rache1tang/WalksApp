@@ -18,12 +18,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.walksapp.fragments.SearchFragment;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.io.ByteArrayOutputStream;
@@ -173,6 +177,52 @@ public class AddWalkActivity extends AppCompatActivity {
             try {
                 walk.save();
             } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                Search.makeOtherJson(walk);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            ParseQuery<Data> query = ParseQuery.getQuery(Data.class);
+            try {
+                Data dataa = query.get(SearchFragment.tagsID);
+                JSONObject ob = dataa.getData();
+                for (String tag : TagsAdapter.newTags) {
+                    JSONObject obNew = new JSONObject();
+                    obNew.put(walk.getObjectId(), 0);
+                    ob.put(tag, obNew);
+                }
+                JSONArray selectedTags = new JSONArray();
+                for (String tag : AddTagsActivity.selected) {
+                    selectedTags.put(tag);
+                    JSONObject json = ob.getJSONObject(tag);
+                    json.put(walk.getObjectId(), 0);
+                    ob.put(tag, json);
+                }
+                walk.setTags(selectedTags);
+                dataa.setData(ob);
+                dataa.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            Log.e(TAG, "error saving new tag", e);
+                        }
+                    }
+                });
+                walk.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            Log.e(TAG, "error saving tags", e);
+                        }
+                    }
+                });
+            } catch (ParseException | JSONException e) {
                 e.printStackTrace();
             }
 

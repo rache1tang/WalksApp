@@ -135,4 +135,91 @@ public class Search {
             }
         });
     }
+
+    public static void updateOtherJson(String descrNew, String descrOld, String walkId) throws ParseException, JSONException {
+        List<String> arrNew = SearchFragment.parseString(descrNew);
+        List<String> arrOld = SearchFragment.parseString(descrOld);
+
+        HashSet<String> hashNew = new HashSet<>(arrNew);
+        HashSet<String> hashOld = new HashSet<>(arrOld);
+
+        ParseQuery<Data> query = ParseQuery.getQuery(Data.class);
+        Data dataOther = query.get(SearchFragment.otherID);
+        JSONObject obOther = dataOther.getData();
+
+        Data dataMeaningless = query.get(SearchFragment.meaninglessID);
+        JSONObject obMeaningless = dataMeaningless.getData();
+
+        for (String word : hashNew) {
+            if (!obMeaningless.has(word)) { // if not a meaningless word
+                JSONObject json;
+                if (obOther.has(word)) {
+                    json = obOther.getJSONObject(word);
+                } else {
+                    json = new JSONObject();
+                }
+                json.put(walkId, 0);
+                obOther.put(word, json);
+            }
+        }
+        for (String word : hashOld) {
+            if (!obMeaningless.has(word)) { // if not a meaningless word
+                if (!hashNew.contains(word)) { // no longer part of the description
+                    JSONObject json = obOther.getJSONObject(word);
+                    json.remove(walkId);
+                    obOther.put(word, json);
+                }
+            }
+        }
+
+        dataOther.setData(obOther);
+        dataOther.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "error saving data for other words");
+                }
+            }
+        });
+    }
+
+    public static void makeOtherJson(Walk walk) throws ParseException, JSONException {
+        String allText = walk.getDescription() + " " + walk.getName() + " " + walk.getLocation();
+        allText = allText.toLowerCase();
+        List<String> parsed = SearchFragment.parseString(allText);
+
+        String walkId = walk.getObjectId();
+
+        ParseQuery<Data> query = ParseQuery.getQuery(Data.class);
+        Data dataOther = query.get(SearchFragment.otherID);
+        JSONObject obOther = dataOther.getData();
+
+        Data dataMeaningless = query.get(SearchFragment.meaninglessID);
+        JSONObject obMeaningless = dataMeaningless.getData();
+
+        for (String word : parsed) {
+            if (!obMeaningless.has(word)) { // if not a meaningless word
+                JSONObject json;
+                if (obOther.has(word)) {
+                    json = obOther.getJSONObject(word);
+                } else {
+                    json = new JSONObject();
+                }
+                json.put(walkId, 0);
+                obOther.put(word, json);
+            }
+        }
+
+        Log.i(TAG, "\n\n" + obOther.toString(4));
+
+        dataOther.setData(obOther);
+        dataOther.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "error saving data for other words");
+                }
+            }
+        });
+    }
 }

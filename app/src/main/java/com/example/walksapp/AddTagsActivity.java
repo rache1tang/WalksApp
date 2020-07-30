@@ -41,7 +41,7 @@ public class AddTagsActivity extends AppCompatActivity {
     Button btnCreateWalk;
     RecyclerView rvTags;
     List<String> tags;
-    HashSet<String> selected;
+    public static HashSet<String> selected;
     TagsAdapter adapter;
     ImageView ivTagsCancel;
 
@@ -83,43 +83,10 @@ public class AddTagsActivity extends AppCompatActivity {
         btnCreateWalk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ParseQuery<Data> query = ParseQuery.getQuery(Data.class);
-                try {
-                    Data data = query.get(SearchFragment.tagsID);
-                    JSONObject ob = data.getData();
-                    for (String tag : TagsAdapter.newTags) {
-                        JSONObject obNew = new JSONObject();
-                        obNew.put(walk.getObjectId(), 0);
-                        ob.put(tag, obNew);
-                    }
-                    JSONArray selectedTags = new JSONArray();
-                    for (String tag : selected) {
-                        selectedTags.put(tag);
-                        JSONObject json = ob.getJSONObject(tag);
-                        json.put(walk.getObjectId(), 0);
-                        ob.put(tag, json);
-                    }
-                    walk.setTags(selectedTags);
-                    data.setData(ob);
-                    data.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e != null) {
-                                Log.e(TAG, "error saving new tag", e);
-                            }
-                        }
-                    });
-                } catch (ParseException | JSONException e) {
-                    e.printStackTrace();
-                }
-
-
                 // send back to last activity to send to location activity
                 Intent i = new Intent();
                 i.putExtra(KEY_FINAL_WALK, Parcels.wrap(walk));
                 setResult(RESULT_OK, i);
-
-                TagsAdapter.newTags.clear();
                 finish();
             }
         });

@@ -64,6 +64,8 @@ public class EditWalkActivity extends AppCompatActivity {
 
     ParseFile photoFile;
 
+    String oldDescriptionName;
+
     public static Walk walk;
 
     PopupWindow popup;
@@ -111,6 +113,7 @@ public class EditWalkActivity extends AppCompatActivity {
 
         etName.setText(walk.getName());
         etDescription.setText(walk.getDescription());
+        oldDescriptionName = walk.getDescription() + " " + walk.getName();
 
         ivBanner.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,6 +152,7 @@ public class EditWalkActivity extends AppCompatActivity {
                                 }
                                 Intent i = new Intent();
                                 setResult(RESULT_CANCELED, i);
+                                popup.dismiss();
                                 finish();
                             }
                         });
@@ -211,6 +215,15 @@ public class EditWalkActivity extends AppCompatActivity {
                 String newDescription = etDescription.getText().toString();
                 walk.put("description", newDescription);
                 if (photoFile != null) walk.setImage(photoFile);
+
+                try {
+                    Search.updateOtherJson(newName + " " + newDescription, oldDescriptionName, walk.getObjectId());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
                 walk.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
