@@ -27,6 +27,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
     List<String> tags;
     HashSet<String> selected;
     PopupWindow popup;
+    public static HashSet<String> newTags;
 
     public TagsAdapter(Context context, List<String> tags, HashSet<String> selected) {
         this.context = context;
@@ -90,6 +91,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
                                 String newTag = etNewTag.getText().toString();
                                 tags.add(tags.size() - 1, newTag);
                                 selected.add(newTag);
+                                newTags.add(newTag);
                                 notifyDataSetChanged();
                                 popup.dismiss();
                             }

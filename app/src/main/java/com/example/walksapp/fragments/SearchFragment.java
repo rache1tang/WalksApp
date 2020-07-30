@@ -107,8 +107,7 @@ public class SearchFragment extends Fragment {
         return Arrays.asList(stripped.split(" "));
     }
 
-    // TODO: make into a dictionary for easy searching
-    private void queryWalks(final List<String> keywords) { // TODO: super inefficient
+    private void queryWalks(final List<String> keywords) {
         adapter.clear();
         ParseQuery<Walk> query = ParseQuery.getQuery(Walk.class);
         query.include(Walk.KEY_AUTHOR);

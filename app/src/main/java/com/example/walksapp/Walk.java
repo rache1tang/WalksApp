@@ -68,12 +68,12 @@ public class Walk extends ParseObject {
         put(KEY_AUTHOR, user);
     }
 
-    public String getTags() {
-        return getString(KEY_TAGS);
+    public JSONArray getTags() {
+        return getJSONArray(KEY_TAGS);
     }
 
-    public void setTags(ArrayList<String> tags) {
-            put(KEY_TAGS, String.join(" ", tags));
+    public void setTags(JSONArray tags) {
+            put(KEY_TAGS, tags);
     }
 
     public ParseFile getImage() {

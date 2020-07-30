@@ -509,6 +509,7 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
             }
 
         } else if (requestCode == EDIT_CODE && resultCode == RESULT_OK) {
+            walk = EditWalkActivity.walk;
             return;
         } else if (resultCode == RESULT_CANCELED) {
             finish();

@@ -31,12 +31,16 @@ import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 public class EditWalkActivity extends AppCompatActivity {
@@ -56,10 +60,11 @@ public class EditWalkActivity extends AppCompatActivity {
     TagsAdapter adapter;
     List<String> tags;
     HashSet<String> selected;
+    HashSet<String> originalTags;
 
     ParseFile photoFile;
 
-    Walk walk;
+    public static Walk walk;
 
     PopupWindow popup;
 
@@ -71,6 +76,8 @@ public class EditWalkActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_walk);
 
         photoFile = null;
+        TagsAdapter.newTags = new HashSet<>();
+        originalTags = new HashSet<>();
 
         etName = findViewById(R.id.etEditWalkName);
         etDescription = findViewById(R.id.etEditWalkDescription);
@@ -159,12 +166,50 @@ public class EditWalkActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                ParseQuery<Data> query = ParseQuery.getQuery(Data.class);
+                try {
+                    Data data = query.get(SearchFragment.tagsID);
+                    JSONObject ob = data.getData();
+                    for (String tag : TagsAdapter.newTags) {
+                        JSONObject obNew = new JSONObject();
+                        obNew.put(walk.getObjectId(), 0);
+                        ob.put(tag, obNew);
+                    }
+                    JSONArray arr = new JSONArray();
+                    for (String tag : selected) {
+                        arr.put(tag);
+                        JSONObject json = ob.getJSONObject(tag);
+                        json.put(walk.getObjectId(), 0);
+                        ob.put(tag, json);
+                    }
+                    for (String tag : originalTags) {
+                        JSONObject json = ob.getJSONObject(tag);
+                        if (!selected.contains(tag)) {
+                            json.remove(walk.getObjectId());
+                            Log.i(TAG, "removing tag from data  " + json.toString());
+                            ob.put(tag, json);
+                        }
+                    }
+                    walk.setTags(arr);
+                    data.setData(ob);
+                    data.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e != null) {
+                                Log.e(TAG, "error saving new tag", e);
+                            }
+                        }
+                    });
+                } catch (ParseException | JSONException ex) {
+                    ex.printStackTrace();
+                }
+
                 // save walk and send back to walk details activity
                 String newName = etName.getText().toString();
                 walk.put("name", newName);
                 String newDescription = etDescription.getText().toString();
                 walk.put("description", newDescription);
-                walk.setTags(new ArrayList<>(selected));
                 if (photoFile != null) walk.setImage(photoFile);
                 walk.saveInBackground(new SaveCallback() {
                     @Override
@@ -180,35 +225,42 @@ public class EditWalkActivity extends AppCompatActivity {
                 });
 
 
+
+
             }
         });
     }
 
     public void getSelectedTags() {
-        String walkTags = walk.getTags();
+        JSONArray walkTags = walk.getTags();
         if (walkTags != null) {
-            selected.addAll(SearchFragment.parseString(walkTags));
+            for (int i = 0; i < walkTags.length(); i++) {
+                try {
+                    originalTags.add(walkTags.getString(i));
+                    selected.add(walkTags.getString(i));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            adapter.notifyDataSetChanged();
         }
     }
 
     private void queryTags() {
-        ParseQuery<Walk> query = ParseQuery.getQuery(Walk.class);
-        query.findInBackground(new FindCallback<Walk>() {
-            HashSet tagSet = new HashSet<>();
-            @Override
-            public void done(List<Walk> objects, ParseException e) {
-                for (Walk walk : objects) {
-                    for (String tag : walk.getTags().split(" ")) {
-                        if ((!tagSet.contains(tag)) && !tag.equals("")) {
-                            tagSet.add(tag);
-                            tags.add(tag);
-                        }
-                    }
-                }
-                tags.add("+");
-                adapter.notifyDataSetChanged();
+        ParseQuery<Data> query = ParseQuery.getQuery(Data.class);
+        try {
+            Data data = query.get(SearchFragment.tagsID);
+            JSONObject ob = data.getData();
+
+            for (Iterator<String> it = ob.keys(); it.hasNext(); ) {
+                String key = it.next();
+                tags.add(key);
             }
-        });
+            tags.add("+");
+            adapter.notifyDataSetChanged();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
     }
 

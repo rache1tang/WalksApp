@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.example.walksapp.fragments.SearchFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -22,10 +23,14 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 public class AddTagsActivity extends AppCompatActivity {
@@ -44,6 +49,8 @@ public class AddTagsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_tags);
+
+        TagsAdapter.newTags = new HashSet<>();
 
         // get reference to layout items
         btnCreateWalk = findViewById(R.id.btnCreateWalk);
@@ -76,38 +83,64 @@ public class AddTagsActivity extends AppCompatActivity {
         btnCreateWalk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                walk.setTags(new ArrayList<>(selected));
+                ParseQuery<Data> query = ParseQuery.getQuery(Data.class);
+                try {
+                    Data data = query.get(SearchFragment.tagsID);
+                    JSONObject ob = data.getData();
+                    for (String tag : TagsAdapter.newTags) {
+                        JSONObject obNew = new JSONObject();
+                        obNew.put(walk.getObjectId(), 0);
+                        ob.put(tag, obNew);
+                    }
+                    JSONArray selectedTags = new JSONArray();
+                    for (String tag : selected) {
+                        selectedTags.put(tag);
+                        JSONObject json = ob.getJSONObject(tag);
+                        json.put(walk.getObjectId(), 0);
+                        ob.put(tag, json);
+                    }
+                    walk.setTags(selectedTags);
+                    data.setData(ob);
+                    data.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e != null) {
+                                Log.e(TAG, "error saving new tag", e);
+                            }
+                        }
+                    });
+                } catch (ParseException | JSONException e) {
+                    e.printStackTrace();
+                }
+
 
                 // send back to last activity to send to location activity
                 Intent i = new Intent();
                 i.putExtra(KEY_FINAL_WALK, Parcels.wrap(walk));
                 setResult(RESULT_OK, i);
 
+                TagsAdapter.newTags.clear();
                 finish();
             }
         });
 
     }
 
-    // TODO: change when implementing JSONobject for search
     private void queryTags() { // find all tags that exist
-        ParseQuery<Walk> query = ParseQuery.getQuery(Walk.class);
-        query.findInBackground(new FindCallback<Walk>() {
-            HashSet tagSet = new HashSet<>();
-            @Override
-            public void done(List<Walk> objects, ParseException e) {
-                for (Walk walk : objects) {
-                    for (String tag : walk.getTags().split(" ")) {
-                        if ((!tagSet.contains(tag)) && !tag.equals("")) {
-                            tagSet.add(tag);
-                            tags.add(tag);
-                        }
-                    }
-                }
-                tags.add("+");
-                adapter.notifyDataSetChanged();
+        ParseQuery<Data> query = ParseQuery.getQuery(Data.class);
+        try {
+            Data data = query.get(SearchFragment.tagsID);
+            JSONObject ob = data.getData();
+
+            for (Iterator<String> it = ob.keys(); it.hasNext(); ) {
+                String key = it.next();
+                tags.add(key);
             }
-        });
+            tags.add("+");
+            adapter.notifyDataSetChanged();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
     }
 }

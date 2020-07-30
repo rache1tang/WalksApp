@@ -28,8 +28,10 @@ public class Search {
             public void done(List<Walk> objects, ParseException e) {
                 JSONObject data = new JSONObject();
                 for (Walk walk : objects) {
-                    for (String tag : walk.getTags().split(" ")) {
+                    JSONArray arr = walk.getTags();
+                    for (int i = 0; i < arr.length(); i++) {
                         try {
+                            String tag = arr.getString(i);
                             JSONObject ob = null;
                             if (data.has(tag)) {
                                 ob = data.getJSONObject(tag);
