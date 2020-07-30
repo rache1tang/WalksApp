@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.walksapp.Data;
 import com.example.walksapp.R;
 import com.example.walksapp.SearchWalksAdapter;
 import com.example.walksapp.Walk;
@@ -24,13 +25,22 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 public class SearchFragment extends Fragment {
 
     public static final String TAG = "SearchFragment";
+
+    public static final String tagsID = "aACe2daX3G";
+    public static final String meaninglessID = "NhWGCUZNM9";
+    public static final String otherID = "WkFD3UICQs";
 
     EditText etSearch;
     Button btnSearch;
@@ -66,7 +76,7 @@ public class SearchFragment extends Fragment {
         tvNoResults = view.findViewById(R.id.tvNoResults);
 
         // hide the "no results" text
-        tvNoResults.setText("");
+        tvNoResults.setVisibility(View.INVISIBLE);
 
         // set up new adapter
         walks = new ArrayList<>();
@@ -102,32 +112,70 @@ public class SearchFragment extends Fragment {
         adapter.clear();
         ParseQuery<Walk> query = ParseQuery.getQuery(Walk.class);
         query.include(Walk.KEY_AUTHOR);
-        query.findInBackground(new FindCallback<Walk>() {
-            @Override
-            public void done(List<Walk> objects, ParseException e) {
-                // walk passes if all keywords pass
-                for (Walk walk : objects) {
-                    String allText = walk.getDescription() + " " + walk.getName() + " " + walk.getTags() + " " + walk.getLocation().toLowerCase();
-                    boolean containsAll = true;
-                    for (String word : keywords) {
-                        if (!allText.contains(word)) {
-                            containsAll = false;
-                            break;
+
+        ParseQuery<Data> queryData = ParseQuery.getQuery(Data.class);
+        try {
+            Data tags = queryData.get(tagsID);
+            Data other = queryData.get(otherID);
+
+            JSONObject tagsJson = tags.getData();
+            JSONObject otherJson = other.getData();
+
+            HashSet<String> walks = new HashSet<>();
+            boolean first = true;
+
+            for (String kw : keywords) {
+                if (first == true) {
+                    if (tagsJson.has(kw)) {
+                        for (Iterator<String> it = tagsJson.getJSONObject(kw).keys(); it.hasNext(); ) {
+                            String key = it.next();
+                            walks.add(key);
+                        }
+                    } if (otherJson.has(kw)) {
+                        for (Iterator<String> it = otherJson.getJSONObject(kw).keys(); it.hasNext(); ) {
+                            String key = it.next();
+                            walks.add(key);
                         }
                     }
-                    if (containsAll) {
-                        walks.add(walk);
+                    if (tagsJson.has(kw) || otherJson.has(kw))
+                        first = false;
+                } else {
+                    JSONObject tagOb = null;
+                    JSONObject otherOb = null;
+                    if (tagsJson.has(kw)) {
+                        tagOb = tagsJson.getJSONObject(kw);
+                    } if (otherJson.has(kw)) {
+                        otherOb = otherJson.getJSONObject(kw);
+                    }
+
+                    if ((tagOb != null) || (otherOb != null)) {
+                        HashSet<String> toDelete = new HashSet<>();
+                        for (String walk : walks) {
+                            if ((tagOb != null) && (tagOb.has(walk)))
+                                break;
+                            else if ((otherOb != null) && (otherOb.has(walk)))
+                                break;
+                            else
+                                toDelete.add(walk);
+                        }
+                        for (String walk : toDelete) walks.remove(walk);
                     }
                 }
-
-                if (walks.isEmpty()) { // if there are no results
-                    tvNoResults.setText("No Walks Found");
-                } else {
-                    tvNoResults.setText("");
-                }
-
-                adapter.notifyDataSetChanged();
             }
-        });
+            for (String walk : walks) {
+                this.walks.add(query.get(walk));
+            }
+        } catch (ParseException | JSONException ex) {
+            ex.printStackTrace();
+        }
+
+        if (walks.isEmpty()) {
+            Log.i(TAG, "hi");
+            tvNoResults.setVisibility(View.VISIBLE);
+        }
+        else
+            tvNoResults.setVisibility(View.INVISIBLE);
+
+        adapter.notifyDataSetChanged();
     }
 }
