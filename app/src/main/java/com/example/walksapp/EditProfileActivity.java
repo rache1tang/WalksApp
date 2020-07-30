@@ -44,6 +44,9 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.io.ByteArrayOutputStream;
@@ -51,6 +54,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -161,7 +165,12 @@ public class EditProfileActivity extends AppCompatActivity implements OnMapReady
                         user.put("profileImage", photoFile);
                     }
 
-                    user.put("tags", String.join(" ", selected));
+                    JSONArray sel = new JSONArray();
+                    for (String tag : selected) {
+                        sel.put(tag);
+                    }
+
+                    user.put("tags", sel);
 
                     user.saveInBackground(new SaveCallback() {
                         @Override
@@ -238,28 +247,33 @@ public class EditProfileActivity extends AppCompatActivity implements OnMapReady
     }
 
     private void getSelected(ParseUser user) {
-        String tagString = user.getString("tags");
-        if (tagString != null)
-            selected.addAll(SearchFragment.parseString(tagString));
+        JSONArray tags = user.getJSONArray("tags");
+        if (tags == null)
+            return;
+        for (int i = 0; i < tags.length(); i++) {
+            try {
+                selected.add(tags.getString(i));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void queryTags() {
-        ParseQuery<Walk> query = ParseQuery.getQuery(Walk.class);
-        query.findInBackground(new FindCallback<Walk>() {
-            HashSet tagSet = new HashSet<>();
-            @Override
-            public void done(List<Walk> objects, ParseException e) {
-                for (Walk walk : objects) {
-                    for (String tag : walk.getTags().split(" ")) {
-                        if ((!tagSet.contains(tag)) && !tag.equals("")) {
-                            tagSet.add(tag);
-                            tags.add(tag);
-                        }
-                    }
-                }
-                adapter.notifyDataSetChanged();
+        ParseQuery<Data> query = ParseQuery.getQuery(Data.class);
+        try {
+            Data data = query.get(SearchFragment.tagsID);
+            JSONObject ob = data.getData();
+
+            for (Iterator<String> it = ob.keys(); it.hasNext(); ) {
+                String key = it.next();
+                tags.add(key);
             }
-        });
+            adapter.notifyDataSetChanged();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 
     // Trigger gallery selection for a photo

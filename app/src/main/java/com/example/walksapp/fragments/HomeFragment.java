@@ -18,20 +18,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.walksapp.AddWalkActivity;
+import com.example.walksapp.Data;
 import com.example.walksapp.R;
 import com.example.walksapp.Search;
 import com.example.walksapp.Suggest;
 import com.example.walksapp.Walk;
 import com.example.walksapp.WalksAdapter;
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
@@ -132,42 +136,74 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    protected void queryWalks() { //TODO: inefficient
-        String userTags = ParseUser.getCurrentUser().getString("tags");
+    protected void queryWalks() {
+        JSONArray userTags = ParseUser.getCurrentUser().getJSONArray("tags");
         ParseQuery<Walk> query = ParseQuery.getQuery(Walk.class);
         query.include(Walk.KEY_AUTHOR);
         query.addDescendingOrder(Walk.KEY_CREATED_AT);
-        List<Walk> objects = null;
+
+        ParseQuery<Data> queryData = ParseQuery.getQuery(Data.class);
+        JSONObject tags = null;
         try {
-            objects = query.find();
+            Data data = queryData.get(SearchFragment.tagsID);
+            tags = data.getData();
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
         adapter.clear();
-        if (objects != null) {
-            if (objects.isEmpty()) {
+        int length;
+        if (userTags != null) {
+            length = userTags.length();
+        } else {
+            length = 0;
+        }
+        if (length == 0) {
+            Log.i(TAG, "query all");
+            query.findInBackground(new FindCallback<Walk>() {
+                @Override
+                public void done(List<Walk> objects, ParseException e) {
+                    if (objects.isEmpty()) {
+                        tvNotice.setVisibility(View.VISIBLE);
+                    } else {
+                        tvNotice.setVisibility(View.INVISIBLE);
+                    }
+                    walks.addAll(objects);
+                    adapter.notifyDataSetChanged();
+                    swipeContainer.setRefreshing(false);
+                }
+            });
+        } else {
+            HashSet<String> walksHash = new HashSet<>();
+            for (int i = 0; i < length; i++) {
+                try {
+                    String id = userTags.getString(i);
+                    for (Iterator<String> it = tags.getJSONObject(id).keys(); it.hasNext(); ) {
+                        String key = it.next();
+                        walksHash.add(key);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            for (String walk : walksHash) {
+                try {
+                    walks.add(query.get(walk));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (walks.isEmpty()) {
                 tvNotice.setVisibility(View.VISIBLE);
             } else {
                 tvNotice.setVisibility(View.INVISIBLE);
             }
-            if (userTags.isEmpty()) {
-                walks.addAll(objects);
-                adapter.notifyDataSetChanged();
-                swipeContainer.setRefreshing(false);
-                return;
-            }
-            for (Walk ob : objects) {
-                List<String> tags = SearchFragment.parseString(ob.getTags());
-                for (String tag : tags) {
-                    if (userTags.contains(tag)) {
-                        walks.add(ob);
-                        break;
-                    }
-                }
-            }
+            adapter.notifyDataSetChanged();
+            swipeContainer.setRefreshing(false);
         }
-        adapter.notifyDataSetChanged();
-        swipeContainer.setRefreshing(false);
+
+
 
     }
 

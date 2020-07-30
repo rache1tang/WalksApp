@@ -169,10 +169,8 @@ public class SearchFragment extends Fragment {
             ex.printStackTrace();
         }
 
-        if (walks.isEmpty()) {
-            Log.i(TAG, "hi");
+        if (walks.isEmpty())
             tvNoResults.setVisibility(View.VISIBLE);
-        }
         else
             tvNoResults.setVisibility(View.INVISIBLE);
 
