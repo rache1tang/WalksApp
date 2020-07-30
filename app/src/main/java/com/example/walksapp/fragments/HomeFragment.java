@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.walksapp.AddWalkActivity;
 import com.example.walksapp.R;
+import com.example.walksapp.Search;
 import com.example.walksapp.Suggest;
 import com.example.walksapp.Walk;
 import com.example.walksapp.WalksAdapter;
