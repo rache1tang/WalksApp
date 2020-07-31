@@ -470,7 +470,10 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
             commentsAdapter.notifyItemInserted(0);
             rvComments.scrollToPosition(0);
 
-            tvNoComments.setVisibility(View.INVISIBLE);
+            if (comments.isEmpty())
+                tvNoComments.setVisibility(View.VISIBLE);
+            else
+                tvNoComments.setVisibility(View.INVISIBLE);
 
             // save comment
             comment.saveInBackground(new SaveCallback() {

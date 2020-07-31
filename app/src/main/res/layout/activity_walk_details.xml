@@ -74,13 +74,15 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_toStartOf="@+id/ivDetailsEdit"
                 android:textSize="30sp"
                 android:textStyle="bold"
                 tools:text="Name" />
 
             <TextView
                 android:id="@+id/tvDetailsLocation"
-                android:layout_width="wrap_content"
+                android:layout_width="170dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvDetailsName"
                 android:layout_alignParentStart="true"
@@ -93,7 +95,7 @@
                 android:id="@+id/ivDetailsHeart"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                android:layout_marginStart="120dp"
+                android:layout_marginStart="50dp"
                 android:layout_marginTop="55dp"
                 android:layout_toEndOf="@+id/tvDetailsLocation"
                 tools:srcCompat="@tools:sample/avatars" />
@@ -181,14 +183,14 @@
 
             <ImageView
                 android:id="@+id/ivDetailsEdit"
-                android:layout_width="35dp"
-                android:layout_height="40dp"
+                android:layout_width="25dp"
+                android:layout_height="30dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginBottom="15dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
                 app:srcCompat="@drawable/edit_pencil" />
 
             <androidx.recyclerview.widget.RecyclerView

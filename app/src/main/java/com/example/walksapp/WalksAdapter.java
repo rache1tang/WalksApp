@@ -35,6 +35,8 @@ public class WalksAdapter extends RecyclerView.Adapter<WalksAdapter.ViewHolder> 
     List<Walk> walks;
     HashSet<String> likedWalks;
 
+    public static int position;
+
     public WalksAdapter(Context context, List<Walk> walks, HashSet<String> likedWalks) {
         this.context = context;
         this.walks = walks;
@@ -83,7 +85,7 @@ public class WalksAdapter extends RecyclerView.Adapter<WalksAdapter.ViewHolder> 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int position = getAdapterPosition();
+                    position = getAdapterPosition();
                     Walk walk = walks.get(position);
 
                     Intent intent = new Intent(context, WalkDetailsActivity.class);

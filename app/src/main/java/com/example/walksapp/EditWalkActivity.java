@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
+import com.example.walksapp.fragments.HomeFragment;
 import com.example.walksapp.fragments.SearchFragment;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
@@ -143,6 +144,19 @@ public class EditWalkActivity extends AppCompatActivity {
                 btnDel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Delete.fromComments(walk);
+                        try {
+                            Delete.fromData(walk);
+                            Delete.fromLikes(walk);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        if (HomeFragment.likedWalks.contains(walk.getObjectId()))
+                            HomeFragment.likedWalks.remove(walk.getObjectId());
+                        HomeFragment.walks.remove(WalksAdapter.position);
+                        HomeFragment.adapter.notifyDataSetChanged();
                         walk.deleteInBackground(new DeleteCallback() {
                             @Override
                             public void done(ParseException e) {

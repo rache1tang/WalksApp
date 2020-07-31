@@ -46,10 +46,10 @@ public class HomeFragment extends Fragment {
     public static final int REQUEST_CODE = 42;
 
     RecyclerView rvWalks;
-    protected WalksAdapter adapter;
-    protected List<Walk> walks;
+    public static WalksAdapter adapter;
+    public static List<Walk> walks;
     protected ImageView ivAdd;
-    protected HashSet<String> likedWalks;
+    public static HashSet<String> likedWalks;
     protected TextView tvNotice;
     public SwipeRefreshLayout swipeContainer;
 
@@ -125,7 +125,7 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if ((requestCode == REQUEST_CODE || requestCode == WalksAdapter.WALK_DETAILS_CODE) && resultCode == RESULT_OK) {
+        /*if ((requestCode == REQUEST_CODE || requestCode == WalksAdapter.WALK_DETAILS_CODE) && resultCode == RESULT_OK) {
 
             //TODO: insert into recycler view some other way please
             // refresh feed so it contains new walk
@@ -133,7 +133,11 @@ public class HomeFragment extends Fragment {
             queryWalks();
             queryLikes();
             adapter.notifyDataSetChanged();
-        }
+        } */
+        adapter.clear();
+        queryWalks();
+        queryLikes();
+        adapter.notifyDataSetChanged();
     }
 
     protected void queryWalks() {

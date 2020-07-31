@@ -20,6 +20,7 @@ import java.util.List;
 public class Suggest {
 
     public static final String TAG = "Suggest";
+    public static final String suggestId = "G1jy4mcJzm";
 
     public static JSONObject likeGraph;
 
@@ -143,6 +144,7 @@ public class Suggest {
                         dataWalk = data.getJSONObject(walkId);
                         for (int i = 0; i < userLikes.length(); i++) {
                             String id = userLikes.getString(i);
+                            if (id.equals(walkId)) break;
                             if (dataWalk.has(id)) {
                                 dataWalk.put(id, dataWalk.getInt(id) + 1);
                                 JSONObject dataNeighbor = data.getJSONObject(id);
@@ -162,6 +164,7 @@ public class Suggest {
                         dataWalk = new JSONObject();
                         for (int i = 0; i < userLikes.length(); i++) {
                             String id = userLikes.getString(i);
+                            if (id.equals(walkId)) break;
                             dataWalk.put(id, 1);
                             JSONObject dataNeighbor = null;
                             if (data.has(id)) {
