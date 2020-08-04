@@ -7,6 +7,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -540,7 +546,7 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
     public void translateToLatLng(JSONArray points) throws JSONException {
         path = new ArrayList<>();
 
-        for (int i = 0; i < points.length(); i ++) {
+        for (int i = 0; i < points.length(); i++) {
             JSONArray coord = points.getJSONArray(i);
             double lat = coord.getDouble(0);
             double lng = coord.getDouble(1);
@@ -548,4 +554,6 @@ public class WalkDetailsActivity extends AppCompatActivity implements OnMapReady
             path.add(point);
         }
     }
+
+
 }

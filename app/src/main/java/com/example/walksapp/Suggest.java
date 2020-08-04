@@ -144,7 +144,7 @@ public class Suggest {
                         dataWalk = data.getJSONObject(walkId);
                         for (int i = 0; i < userLikes.length(); i++) {
                             String id = userLikes.getString(i);
-                            if (id.equals(walkId)) break;
+                            if (id.equals(walkId)) continue;
                             if (dataWalk.has(id)) {
                                 dataWalk.put(id, dataWalk.getInt(id) + 1);
                                 JSONObject dataNeighbor = data.getJSONObject(id);
@@ -192,6 +192,8 @@ public class Suggest {
                     public void done(ParseException e) {
                         if (e != null)
                             Log.e(TAG, "error adding like to graph", e);
+                        else
+                            Log.i(TAG, "add like successful");
                     }
                 });
 

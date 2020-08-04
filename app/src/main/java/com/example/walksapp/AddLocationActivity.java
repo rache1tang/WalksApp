@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -36,6 +38,7 @@ import com.parse.ParseGeoPoint;
 import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -105,18 +108,19 @@ public class AddLocationActivity extends AppCompatActivity implements OnMapReady
                 getSupportFragmentManager().findFragmentById(R.id.placeAutocomplete);
 
         // Specify the types of place data to return.
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.LAT_LNG, Place.Field.ID, Place.Field.NAME));
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.LAT_LNG, Place.Field.ID, Place.Field.ADDRESS, Place.Field.NAME));
 
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NotNull Place place) { // zoom to place and set location in walk
-                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId() + ", " + place.getLatLng().toString());
+                //Log.i(TAG, "Place: " + place.getName() + ", " + place.getId() + ", " + place.getLatLng().toString());
                 LatLng latLng = place.getLatLng();
                 selectedPlace = place;
                 mMap.addMarker(new MarkerOptions().position(latLng).title(place.getName()));
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
-                walk.setLocation(place.getName());
+                walk.setLocation(place.getAddress());
+                walk.setCity(place.getName());
                 walk.setLocationGeo(new ParseGeoPoint(latLng.latitude, latLng.longitude));
             }
 

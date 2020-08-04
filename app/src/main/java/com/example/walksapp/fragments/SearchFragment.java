@@ -152,9 +152,9 @@ public class SearchFragment extends Fragment {
                         HashSet<String> toDelete = new HashSet<>();
                         for (String walk : walks) {
                             if ((tagOb != null) && (tagOb.has(walk)))
-                                break;
+                                continue;
                             else if ((otherOb != null) && (otherOb.has(walk)))
-                                break;
+                                continue;
                             else
                                 toDelete.add(walk);
                         }

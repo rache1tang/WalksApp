@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.walksapp.fragments.ProfileScrollFragment;
 import com.parse.ParseException;
 import com.parse.SaveCallback;
 
@@ -30,6 +31,10 @@ public class WalksAdapter extends RecyclerView.Adapter<WalksAdapter.ViewHolder> 
     public static final String KEY_DETAILS = "walk_details";
     public static final String TAG = "WalksAdapter";
     public static final int WALK_DETAILS_CODE = 37;
+
+    public static final int nameMax = 15;
+    public static final int locMax = 25;
+    public static final int descrMax = 60;
 
     Context context;
     List<Walk> walks;
@@ -97,9 +102,9 @@ public class WalksAdapter extends RecyclerView.Adapter<WalksAdapter.ViewHolder> 
         }
 
         public void bind(Walk walk) {
-            tvName.setText(walk.getName());
-            tvLocation.setText(walk.getLocation());
-            tvDescription.setText(walk.getDescription());
+            tvName.setText(maxCharacters(walk.getName(), nameMax));
+            tvLocation.setText(maxCharacters(walk.getCity(), locMax));
+            tvDescription.setText(maxCharacters(walk.getDescription(), descrMax));
 
             if (!likedWalks.contains(walk.getObjectId())) {
                 ivHeart.setVisibility(View.GONE);
@@ -108,5 +113,11 @@ public class WalksAdapter extends RecyclerView.Adapter<WalksAdapter.ViewHolder> 
             Glide.with(context).load(walk.getImage().getUrl()).into(ivImage);
 
         }
+    }
+
+    public static String maxCharacters(String str, int max) {
+        if (str.length() <= max)
+            return str;
+        return str.substring(0, max) + "...";
     }
 }

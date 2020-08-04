@@ -156,6 +156,9 @@ public class EditWalkActivity extends AppCompatActivity {
                         if (HomeFragment.likedWalks.contains(walk.getObjectId()))
                             HomeFragment.likedWalks.remove(walk.getObjectId());
                         HomeFragment.walks.remove(WalksAdapter.position);
+                        if (HomeFragment.walks.isEmpty()) {
+                            HomeFragment.tvNotice.setVisibility(View.VISIBLE);
+                        }
                         HomeFragment.adapter.notifyDataSetChanged();
                         walk.deleteInBackground(new DeleteCallback() {
                             @Override

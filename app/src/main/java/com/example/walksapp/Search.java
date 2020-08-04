@@ -99,10 +99,10 @@ public class Search {
             public void done(List<Walk> objects, ParseException e) {
                 JSONObject dataNew = new JSONObject();
                 for (Walk walk : objects) {
-                    String allText = walk.getDescription() + " " + walk.getName() + " " + walk.getLocation().toLowerCase();
+                    String allText = (walk.getDescription() + " " + walk.getCity() + " " + walk.getName()).toLowerCase();
                     allText = allText.replaceAll("\\p{Punct}","");
                     if (allText.trim().equals(""))
-                        break;
+                        continue;
                     List<String> words = SearchFragment.parseString(allText);
                     for (String word : words) {
                         if (!tagsJSON.has(word) && !meaninglessJSON.has(word)) {
@@ -184,7 +184,7 @@ public class Search {
     }
 
     public static void makeOtherJson(Walk walk) throws ParseException, JSONException {
-        String allText = walk.getDescription() + " " + walk.getName() + " " + walk.getLocation();
+        String allText = walk.getDescription() + " " + walk.getName() + " " + walk.getCity();
         allText = allText.toLowerCase();
         List<String> parsed = SearchFragment.parseString(allText);
 

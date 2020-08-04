@@ -34,6 +34,7 @@ public class Walk extends ParseObject {
     public static final String KEY_LOCATION_GEO = "locationGeo";
     public static final String KEY_PATH = "path";
     public static final String KEY_LIKERS = "likers";
+    public static final String KEY_CITY = "city";
 
     public String getName() {
         return getString(KEY_NAME);
@@ -116,5 +117,11 @@ public class Walk extends ParseObject {
     }
     public void setLikes(JSONArray likes) {
         put(KEY_LIKERS, likes);
+    }
+    public String getCity() {
+        return getString(KEY_CITY);
+    }
+    public void setCity(String city) {
+        put(KEY_CITY, city);
     }
 }

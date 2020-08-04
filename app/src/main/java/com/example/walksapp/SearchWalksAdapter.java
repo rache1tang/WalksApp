@@ -22,6 +22,9 @@ public class SearchWalksAdapter extends RecyclerView.Adapter<SearchWalksAdapter.
 
     public static final String TAG = "SearchWalksAdapter";
 
+    public static final int locMax = 50;
+    public static final int nameMax = 20;
+
     Context context;
     List<Walk> walks;
 
@@ -81,8 +84,8 @@ public class SearchWalksAdapter extends RecyclerView.Adapter<SearchWalksAdapter.
 
         public void bind(Walk walk) {
             Log.i(TAG, "binding walk");
-            tvSearchName.setText(walk.getName());
-            tvSearchLocation.setText(walk.getLocation());
+            tvSearchName.setText(WalksAdapter.maxCharacters(walk.getName(), locMax));
+            tvSearchLocation.setText(WalksAdapter.maxCharacters(walk.getCity(), nameMax));
 
             Glide.with(context).load(walk.getImage().getUrl()).into(ivSearchImg);
         }

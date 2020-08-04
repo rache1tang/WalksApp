@@ -40,7 +40,7 @@
             android:layout_toEndOf="@+id/ivSearchImage"
             android:textSize="24sp"
             android:textStyle="bold"
-            tools:text="Name" />
+            tools:text="NAMENAMENAMENAMENA" />
 
         <TextView
             android:id="@+id/tvSearchLocation"
@@ -49,11 +49,11 @@
             android:layout_below="@+id/tvSearchName"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="0dp"
             android:layout_marginEnd="10dp"
             android:layout_toEndOf="@+id/ivSearchImage"
             android:textStyle="bold"
-            tools:text="Location" />
+            tools:text="LOCATIONLOCATIONLOCATIONLOCATIONLOCA" />
 
     </RelativeLayout>
 

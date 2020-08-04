@@ -50,7 +50,7 @@ public class HomeFragment extends Fragment {
     public static List<Walk> walks;
     protected ImageView ivAdd;
     public static HashSet<String> likedWalks;
-    protected TextView tvNotice;
+    public static TextView tvNotice;
     public SwipeRefreshLayout swipeContainer;
 
 

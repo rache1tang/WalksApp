@@ -205,6 +205,14 @@ public class AddWalkActivity extends AppCompatActivity {
                     ob.put(tag, json);
                 }
                 walk.setTags(selectedTags);
+                walk.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            Log.e(TAG, "error saving tags");
+                        }
+                    }
+                });
                 dataa.setData(ob);
                 dataa.saveInBackground(new SaveCallback() {
                     @Override
@@ -214,14 +222,7 @@ public class AddWalkActivity extends AppCompatActivity {
                         }
                     }
                 });
-                walk.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e != null) {
-                            Log.e(TAG, "error saving tags", e);
-                        }
-                    }
-                });
+
             } catch (ParseException | JSONException e) {
                 e.printStackTrace();
             }
